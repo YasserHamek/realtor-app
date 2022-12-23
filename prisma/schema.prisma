@@ -11,12 +11,12 @@ datasource db {
 }
 
 model User {
-  id                    Int @id @default(autoincrement())
+  id                    Int       @id @default(autoincrement())
   name                  String
   phoneNumber           String
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  email                 String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  email                 String    @unique
   password              String
   userType              UserType
   buyerMessages         Message[] @relation("BuyerMessage")
@@ -58,6 +58,7 @@ model Image {
 enum PropertyType {
   RESIDENTIAL
   CONDO
+  ADMIN
 }
 
 enum UserType {
