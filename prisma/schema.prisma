@@ -10,20 +10,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                    Int @id @default(autoincrement())
+  name                  String
+  phoneNumber           String
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+  email                 String
+  password              String
+  userType              UserType
+}
+
 model Home {
   id                    Int @id @default(autoincrement())
   adress                String 
   number_of_bedrooms    Int
   number_of_bathrooms   Int
   city                  String
-  added_date            DateTime @default(now())
   price                 Float
   land_size             Float
   propertyType          PropertyType
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+}
+
+model Image {
+  id                    Int @id @default(autoincrement())
+  url                   String
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
 }
 
 enum PropertyType {
   RESIDENTIAL
   CONDO
+}
+
+enum UserType {
+  BUYER
+  REALTOR
 }
   
