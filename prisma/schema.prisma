@@ -14,31 +14,45 @@ model User {
   id                    Int @id @default(autoincrement())
   name                  String
   phoneNumber           String
-  created_at            DateTime @default(now())
-  updated_at            DateTime @updatedAt
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
   email                 String
   password              String
   userType              UserType
+  buyerMessages         Message[] @relation("BuyerMessage")
+  realtorMessages       Message[] @relation("RealtorMessage")
+}
+
+model Message {
+  id                    Int @id @default(autoincrement())
+  message               String
+  buyerId               Int
+  buyer                 User @relation("BuyerMessage", fields: [buyerId], references: [id])
+  realtorId             Int 
+  realtor               User @relation("RealtorMessage", fields: [realtorId], references: [id])
 }
 
 model Home {
   id                    Int @id @default(autoincrement())
   adress                String 
-  number_of_bedrooms    Int
-  number_of_bathrooms   Int
+  numberOfBedrooms      Int
+  numberOfBathrooms     Int
   city                  String
   price                 Float
-  land_size             Float
+  landSize              Float
   propertyType          PropertyType
-  created_at            DateTime @default(now())
-  updated_at            DateTime @updatedAt
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  images                Image[]
 }
 
 model Image {
   id                    Int @id @default(autoincrement())
   url                   String
-  created_at            DateTime @default(now())
-  updated_at            DateTime @updatedAt
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  homeId                Int
+  home                  Home @relation(fields: [homeId], references: [id])
 }
 
 enum PropertyType {
