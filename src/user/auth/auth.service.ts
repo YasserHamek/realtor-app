@@ -1,15 +1,20 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from '../user.dto';
+import { SignInUserDto, SignUpUserDto } from '../user.dto';
 import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 import { User, UserType } from '@prisma/client';
+import { JwtUtils } from './JwtUtils';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createUser(createUserDto: CreateUserDto) {
+  async signUpUser(createUserDto: SignUpUserDto) {
     //checking if email is used
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -40,12 +45,25 @@ export class AuthService {
     });
 
     //returning JsonWebToken
-    return jwt.sign(
-      {
-        name: createdUser.name,
-        id: createdUser.id,
+    return JwtUtils.createJsonWebToken(createdUser.id, createdUser.name);
+  }
+
+  async signInUser(signInUserDto: SignInUserDto): Promise<string> {
+    const user: User = await this.prismaService.user.findUnique({
+      where: {
+        email: signInUserDto.email,
       },
-      process.env.JSON_WEB_TOKEN_KEY,
-    );
+    });
+
+    if (
+      !user ||
+      !bcrypt.compare(signInUserDto.password, user ? user.password : '')
+    )
+      throw new HttpException(
+        'Email or Password are incorrect',
+        HttpStatus.BAD_REQUEST,
+      );
+
+    return JwtUtils.createJsonWebToken(user.id, user.name);
   }
 }
