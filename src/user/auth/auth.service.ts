@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SignInUserDto, SignUpUserDto } from '../user.dto';
+import { ProductKeyDto, SignInUserDto, SignUpUserDto } from '../user.dto';
 import * as bcrypt from 'bcryptjs';
 import { User, UserType } from '@prisma/client';
 import { JwtUtils } from './JwtUtils';
@@ -14,7 +14,20 @@ import { JwtUtils } from './JwtUtils';
 export class AuthService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async signUpUser(createUserDto: SignUpUserDto) {
+  async signUpUser(createUserDto: SignUpUserDto, userType: UserType) {
+    //Checking if user want to signUp as REALTOR, if true, we check if he have a valid productKey
+    const productKey = `${createUserDto.email}-${createUserDto.name}-${process.env.PRODUCT_KEY_SIGNITURE}`;
+    if (
+      userType === UserType.REALTOR &&
+      (!createUserDto.productKey ||
+        !bcrypt.compare(createUserDto.productKey, productKey))
+    ) {
+      throw new HttpException(
+        'To signup as REALTOR, you must give a valid productKey, please contact you admin to get a productKey',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     //checking if email is used
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -40,7 +53,7 @@ export class AuthService {
         email: createUserDto.email,
         password: hashedPassword,
         phoneNumber: createUserDto.phoneNumber,
-        userType: UserType.BUYER,
+        userType: userType,
       },
     });
 
@@ -65,5 +78,10 @@ export class AuthService {
       );
 
     return JwtUtils.createJsonWebToken(user.id, user.name);
+  }
+
+  async generateProductKeyDto(productKeyDto: ProductKeyDto): Promise<string> {
+    const key = `${productKeyDto.email}-${productKeyDto.name}-${process.env.PRODUCT_KEY_SIGNITURE}`;
+    return await bcrypt.hash(key, 10);
   }
 }
