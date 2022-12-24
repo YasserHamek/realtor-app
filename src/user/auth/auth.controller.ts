@@ -7,7 +7,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  singUp(@Body() createUserDto: CreateUserDto) {
+  singUp(@Body() createUserDto: CreateUserDto): Promise<string> {
     return this.authService.createUser(createUserDto);
   }
 }

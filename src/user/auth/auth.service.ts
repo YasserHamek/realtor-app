@@ -1,6 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from '../user.dto';
+import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
+import { User, UserType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -8,10 +11,9 @@ export class AuthService {
 
   async createUser(createUserDto: CreateUserDto) {
     //checking if email is used
-    const email = createUserDto.email;
     const user = await this.prismaService.user.findUnique({
       where: {
-        email,
+        email: createUserDto.email,
       },
     });
     if (user) {
@@ -19,6 +21,31 @@ export class AuthService {
         'email adress is already used, please use another email adress',
       );
     }
-    return null;
+
+    //hashing the password
+    const hashedPassword: string = await bcrypt.hash(
+      createUserDto.password,
+      10,
+    );
+
+    //creating the user
+    const createdUser: User = await this.prismaService.user.create({
+      data: {
+        name: createUserDto.name,
+        email: createUserDto.email,
+        password: hashedPassword,
+        phoneNumber: createUserDto.phoneNumber,
+        userType: UserType.BUYER,
+      },
+    });
+
+    //returning JsonWebToken
+    return jwt.sign(
+      {
+        name: createdUser.name,
+        id: createdUser.id,
+      },
+      process.env.JSON_WEB_TOKEN_KEY,
+    );
   }
 }
