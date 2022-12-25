@@ -21,7 +21,7 @@ export class AuthController {
     return this.authService.signInUser(signInUserDto);
   }
 
-  //We give the key to REALTOR for signing up as REALTOR
+  //We give the key to user for signing up as REALTOR
   @Post('key')
   generateProductKey(@Body() productKeyDto: ProductKeyDto): Promise<string> {
     return this.authService.generateProductKeyDto(productKeyDto);

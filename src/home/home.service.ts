@@ -20,13 +20,16 @@ export class HomeService {
       },
     });
 
-    const images = createHomeDto.images.map((image) => {
+    const images = createHomeDto.images.map(image => {
+      console.log('____ _ _ _ image : ', image);
       return { url: image.url, homeId: createdHome.id };
     });
 
-    this.prismaService.image.createMany({
-      data: images,
-    });
+    this.prismaService.image
+      .createMany({
+        data: images,
+      })
+      .then();
 
     return createdHome;
   }

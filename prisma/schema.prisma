@@ -58,7 +58,6 @@ model Image {
 enum PropertyType {
   RESIDENTIAL
   CONDO
-  ADMIN
 }
 
 enum UserType {
