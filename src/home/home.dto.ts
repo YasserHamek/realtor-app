@@ -50,10 +50,10 @@ export class Image {
 
 export class UpdateHomeDto extends PartialType(CreateHomeDto) {
   @Exclude()
-  createdAt;
+  createdAt?;
 
   @Exclude()
-  updatedAt;
+  updatedAt?;
 
   constructor(updateHomeDto: Partial<UpdateHomeDto>) {
     super();

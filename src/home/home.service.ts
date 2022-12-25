@@ -34,7 +34,7 @@ export class HomeService {
   }
 
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
-    const homes = await this.prismaService.home.findMany({
+    const homes: any[] = await this.prismaService.home.findMany({
       select: {
         adress: true,
         city: true,
