@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Get } from "@nestjs/common";
-import { Home } from "@prisma/client";
-import { CreateHomeDto, HomeResponseDto } from "./home.dto";
+import { Body, Controller, Post, Get, Query } from "@nestjs/common";
+import { PropertyType } from "@prisma/client";
+import { CreateHomeDto, HomeFilterDto, HomeResponseDto } from "./home.dto";
 import { HomeService } from "./home.service";
 
 @Controller("home")
@@ -13,7 +13,27 @@ export class HomeController {
   }
 
   @Get()
-  getAllHomes(): Promise<HomeResponseDto[]> {
-    return this.homeService.getAllHomes();
+  getAllHomes(
+    @Query("city") city: string,
+    @Query("propertyType") propertyType: PropertyType,
+    @Query("minPrice") minPrice: string,
+    @Query("maxPrice") maxPrice: string,
+  ): Promise<HomeResponseDto[]> {
+    console.log("____ _ _ minPrice : ", minPrice, " typeOf(minPrice)", typeof minPrice);
+    const price =
+      minPrice || maxPrice
+        ? {
+            ...(minPrice && { gte: parseFloat(minPrice) }),
+            ...(maxPrice && { lte: parseFloat(maxPrice) }),
+          }
+        : undefined;
+
+    const homeFilterDto: HomeFilterDto = {
+      ...(city && { city }),
+      ...(propertyType && { propertyType }),
+      ...(price && { price }),
+    };
+    console.log("____ _ _ _homeFilterDto : ", homeFilterDto);
+    return this.homeService.getAllHomesByFilter(homeFilterDto);
   }
 }

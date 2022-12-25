@@ -51,3 +51,12 @@ export class Image {
 export class HomeResponseDto extends PartialType(CreateHomeDto) {}
 
 export class ResponseImageDto extends PartialType(Image) {}
+
+export class HomeFilterDto {
+  city?: string;
+  propertyType?: PropertyType;
+  price?: {
+    gte?: number;
+    lte?: number;
+  };
+}
