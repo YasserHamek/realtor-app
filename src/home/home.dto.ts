@@ -1,15 +1,7 @@
-import { PropertyType } from '@prisma/client';
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { PropertyType } from "@prisma/client";
+import { Type } from "class-transformer";
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from "class-validator";
+import { PartialType } from "@nestjs/mapped-types";
 
 export class CreateHomeDto {
   @IsString()
@@ -53,5 +45,9 @@ export class Image {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  homeId: number;
+  homeId?: number;
 }
+
+export class HomeResponseDto extends PartialType(CreateHomeDto) {}
+
+export class ResponseImageDto extends PartialType(Image) {}

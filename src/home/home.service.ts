@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { Home } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateHomeDto } from './home.dto';
+import { Injectable } from "@nestjs/common";
+import { Home } from "@prisma/client";
+import { PrismaService } from "src/prisma/prisma.service";
+import { CreateHomeDto, HomeResponseDto } from "./home.dto";
 
 @Injectable()
 export class HomeService {
@@ -21,7 +21,6 @@ export class HomeService {
     });
 
     const images = createHomeDto.images.map(image => {
-      console.log('____ _ _ _ image : ', image);
       return { url: image.url, homeId: createdHome.id };
     });
 
@@ -32,5 +31,27 @@ export class HomeService {
       .then();
 
     return createdHome;
+  }
+
+  async getAllHomes(): Promise<HomeResponseDto[]> {
+    const homes: HomeResponseDto[] = await this.prismaService.home.findMany({
+      select: {
+        adress: true,
+        city: true,
+        id: true,
+        landSize: true,
+        numberOfBathrooms: true,
+        numberOfBedrooms: true,
+        price: true,
+        propertyType: true,
+        images: {
+          select: {
+            url: true,
+            id: true,
+          },
+        },
+      },
+    });
+    return homes;
   }
 }
