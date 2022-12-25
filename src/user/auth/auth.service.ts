@@ -1,14 +1,9 @@
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ProductKeyDto, SignInUserDto, SignUpUserDto } from '../user.dto';
-import * as bcrypt from 'bcryptjs';
-import { User, UserType } from '@prisma/client';
-import { JwtUtils } from './JwtUtils';
+import { ConflictException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import { ProductKeyDto, SignInUserDto, SignUpUserDto } from "../user.dto";
+import * as bcrypt from "bcryptjs";
+import { User, UserType } from "@prisma/client";
+import { JwtUtils } from "./JwtUtils";
 
 @Injectable()
 export class AuthService {
@@ -17,13 +12,9 @@ export class AuthService {
   async signUpUser(createUserDto: SignUpUserDto, userType: UserType) {
     //Checking if user want to signUp as REALTOR, if true, we check if he have a valid productKey
     const productKey = `${createUserDto.email}-${createUserDto.name}-${process.env.PRODUCT_KEY_SIGNITURE}`;
-    if (
-      userType === UserType.REALTOR &&
-      (!createUserDto.productKey ||
-        !bcrypt.compare(createUserDto.productKey, productKey))
-    ) {
+    if (userType === UserType.REALTOR && (!createUserDto.productKey || !bcrypt.compare(createUserDto.productKey, productKey))) {
       throw new HttpException(
-        'To signup as REALTOR, you must give a valid productKey, please contact you admin to get a productKey',
+        "To signup as REALTOR, you must give a valid productKey, please contact you admin to get a productKey",
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -35,16 +26,11 @@ export class AuthService {
       },
     });
     if (user) {
-      throw new ConflictException(
-        'email adress is already used, please use another email adress',
-      );
+      throw new ConflictException("email adress is already used, please use another email adress");
     }
 
     //hashing the password
-    const hashedPassword: string = await bcrypt.hash(
-      createUserDto.password,
-      10,
-    );
+    const hashedPassword: string = await bcrypt.hash(createUserDto.password, 10);
 
     //creating the user
     const createdUser: User = await this.prismaService.user.create({
@@ -68,14 +54,8 @@ export class AuthService {
       },
     });
 
-    if (
-      !user ||
-      !bcrypt.compare(signInUserDto.password, user ? user.password : '')
-    )
-      throw new HttpException(
-        'Email or Password are incorrect',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!user || !bcrypt.compare(signInUserDto.password, user ? user.password : ""))
+      throw new HttpException("Email or Password are incorrect", HttpStatus.BAD_REQUEST);
 
     return JwtUtils.createJsonWebToken(user.id, user.name);
   }

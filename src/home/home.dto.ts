@@ -1,5 +1,5 @@
 import { PropertyType } from "@prisma/client";
-import { Type } from "class-transformer";
+import { Exclude, Type } from "class-transformer";
 import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
 
@@ -34,7 +34,7 @@ export class CreateHomeDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Image)
-  images: Image[];
+  images?: Image[];
 }
 
 export class Image {
@@ -48,7 +48,18 @@ export class Image {
   homeId?: number;
 }
 
-export class HomeResponseDto extends PartialType(CreateHomeDto) {}
+export class UpdateHomeDto extends PartialType(CreateHomeDto) {
+  @Exclude()
+  createdAt;
+
+  @Exclude()
+  updatedAt;
+
+  constructor(updateHomeDto: Partial<UpdateHomeDto>) {
+    super();
+    Object.assign(this, updateHomeDto);
+  }
+}
 
 export class ResponseImageDto extends PartialType(Image) {}
 

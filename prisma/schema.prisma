@@ -52,7 +52,8 @@ model Image {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   homeId                Int
-  home                  Home @relation(fields: [homeId], references: [id])
+  home                  Home @relation(fields: [homeId], references: [id], onDelete: Cascade) // onDelete: Cascade => delete automatically 
+                                                                                                //this image if it's correspondant home is deleted
 }
 
 enum PropertyType {
