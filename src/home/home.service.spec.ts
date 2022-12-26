@@ -1,7 +1,6 @@
 import { HttpException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Home, PropertyType } from "@prisma/client";
-import { rejects } from "assert";
+import { PropertyType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { HomeFilterDto } from "./home.dto";
 import { HomeService } from "./home.service";
@@ -19,7 +18,7 @@ describe("HomeService", () => {
         //   provide: PrismaService,
         //   useValue: {
         //     home: {
-        //       findMany: jest.fn().mockReturnValue(getAllHomesByFilterReturnedValue),
+        //       findMany: jest.fn().mockReturnValue(prismaService_home_findMany_returnedValue),
         //     },
         //   },
         // },
@@ -35,7 +34,7 @@ describe("HomeService", () => {
   });
 
   describe("getAllHomesByFilter", () => {
-    it("it should chould return the right value", async () => {
+    it("it should return the right value", async () => {
       prismaService.home.findMany = jest.fn().mockReturnValue(prismaService_home_findMany_returnedValue);
 
       expect(await service.getAllHomesByFilter(getAllHomeByFilterFilter)).toEqual(homeService_getAllHomesByFilterReturnedValue);
@@ -45,6 +44,16 @@ describe("HomeService", () => {
       prismaService.home.findMany = jest.fn().mockReturnValue([]);
 
       await expect(service.getAllHomesByFilter(getAllHomeByFilterFilter)).rejects.toThrowError(HttpException);
+    });
+
+    it("prismaService should be called by the right params ", async () => {
+      const mockPrismaFindMany = jest
+        .spyOn(prismaService.home, "findMany")
+        .mockImplementation(jest.fn().mockReturnValue(prismaService_home_findMany_returnedValue));
+
+      await service.getAllHomesByFilter(getAllHomeByFilterFilter);
+
+      await expect(mockPrismaFindMany).toBeCalledWith(selectGetAllHomesByFilter);
     });
   });
 });
@@ -120,4 +129,5 @@ const selectGetAllHomesByFilter = {
       },
     },
   },
+  where: getAllHomeByFilterFilter,
 };
