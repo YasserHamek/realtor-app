@@ -1,6 +1,8 @@
 import { Body, Controller, Post, Get, Query, Put, Param, ParseIntPipe } from "@nestjs/common";
 import { Delete } from "@nestjs/common/decorators";
 import { PropertyType } from "@prisma/client";
+import { User } from "src/decorators/user.decorator";
+import { UserTokenData } from "src/user/user.dto";
 import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "./home.service";
 
@@ -9,8 +11,8 @@ export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
   @Post()
-  createHome(@Body() createHomeDto: CreateHomeDto) {
-    return this.homeService.createHome(createHomeDto);
+  createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
+    return this.homeService.createHome(createHomeDto, user.id);
   }
 
   @Get()

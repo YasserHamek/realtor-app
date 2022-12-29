@@ -19,6 +19,7 @@ model User {
   email                 String    @unique
   password              String
   userType              UserType
+  homes                 Home[]
   buyerMessages         Message[] @relation("BuyerMessage")
   realtorMessages       Message[] @relation("RealtorMessage")
 }
@@ -41,6 +42,8 @@ model Home {
   price                 Float
   landSize              Float
   propertyType          PropertyType
+  realtorId             Int
+  realtor               User @relation(fields: [realtorId], references: [id], onDelete: Cascade)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   images                Image[]

@@ -45,5 +45,4 @@ export interface UserTokenData {
   id: number;
   name: string;
   iat: string;
-  exp: string;
 }

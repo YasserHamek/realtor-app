@@ -7,7 +7,7 @@ import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
 export class HomeService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createHome(createHomeDto: CreateHomeDto) {
+  async createHome(createHomeDto: CreateHomeDto, id: number) {
     const createdHome: Home = await this.prismaService.home.create({
       data: {
         adress: createHomeDto.adress,
@@ -17,6 +17,7 @@ export class HomeService {
         numberOfBedrooms: createHomeDto.numberOfBedrooms,
         price: createHomeDto.price,
         propertyType: createHomeDto.propertyType,
+        realtorId: id,
       },
     });
 
@@ -44,6 +45,7 @@ export class HomeService {
         numberOfBedrooms: true,
         price: true,
         propertyType: true,
+        realtorId: true,
         images: {
           select: {
             url: true,
