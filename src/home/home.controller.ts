@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Get, Query, Put, Param, ParseIntPipe } from "@nestjs/common";
 import { Delete } from "@nestjs/common/decorators";
-import { PropertyType } from "@prisma/client";
+import { UnauthorizedException } from "@nestjs/common/exceptions";
+import { Home, PropertyType } from "@prisma/client";
 import { User } from "src/decorators/user.decorator";
 import { UserTokenData } from "src/user/user.dto";
 import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
@@ -40,12 +41,26 @@ export class HomeController {
   }
 
   @Put(":id")
-  updateHomeById(@Param("id", new ParseIntPipe()) id: number, @Body() updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
+  async updateHomeById(
+    @Param("id", new ParseIntPipe()) id: number,
+    @Body() updateHomeDto: UpdateHomeDto,
+    @User() user: UserTokenData,
+  ): Promise<UpdateHomeDto> {
+    const home: Home = await this.homeService.getHomeById(id);
+
+    if (home.realtorId != user.id)
+      throw new UnauthorizedException("Anauthorized Update, you must be the realtor home to update it.");
+
     return this.homeService.updateHomeById(id, updateHomeDto);
   }
 
   @Delete(":id")
-  deleteHomeById(@Param("id", new ParseIntPipe()) id: number): Promise<UpdateHomeDto> {
+  async deleteHomeById(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<UpdateHomeDto> {
+    const home: Home = await this.homeService.getHomeById(id);
+
+    if (home.realtorId != user.id)
+      throw new UnauthorizedException("Anauthorized Update, you must be the realtor home to update it.");
+
     return this.homeService.deleteHomeById(id);
   }
 }
