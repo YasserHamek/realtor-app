@@ -1,3 +1,5 @@
+import { Home, Message, UserType } from "@prisma/client";
+import { Exclude } from "class-transformer";
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional } from "class-validator";
 
 export class SignUpUserDto {
@@ -39,6 +41,33 @@ export class ProductKeyDto {
 
   @IsEmail()
   email: string;
+}
+
+export class UserDto {
+  id: number;
+
+  name: string;
+
+  phoneNumber: string;
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  updatedAt: Date;
+
+  email: string;
+
+  @Exclude()
+  password: string;
+
+  userType: UserType;
+
+  homes?: Home[];
+
+  buyerMessages?: Message[];
+
+  realtorMessages?: Message[];
 }
 
 export interface UserTokenData {
