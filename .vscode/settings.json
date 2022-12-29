@@ -1,0 +1,5 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true //automatically fix prettier auto fix when saving files
+  }
+}

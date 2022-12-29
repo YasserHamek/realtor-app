@@ -1,7 +1,7 @@
-import * as jwt from 'jsonwebtoken';
+import * as jwt from "jsonwebtoken";
 
 export class JwtUtils {
-  static createJsonWebToken(userId: number, userName: string): string {
+  public static createJsonWebToken(userId: number, userName: string): string {
     return jwt.sign(
       {
         id: userId,
@@ -9,5 +9,9 @@ export class JwtUtils {
       },
       process.env.JSON_WEB_TOKEN_KEY,
     );
+  }
+
+  public static decodeToken(token: string) {
+    return token ? jwt.decode(token.replace("Baerer ", "")) : "";
   }
 }

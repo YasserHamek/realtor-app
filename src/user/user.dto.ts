@@ -40,3 +40,10 @@ export class ProductKeyDto {
   @IsEmail()
   email: string;
 }
+
+export interface UserTokenData {
+  id: number;
+  name: string;
+  iat: string;
+  exp: string;
+}
