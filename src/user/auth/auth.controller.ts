@@ -1,7 +1,8 @@
 import { Body, Controller, ParseEnumPipe, Post } from "@nestjs/common";
-import { Param } from "@nestjs/common/decorators";
+import { Get, Param } from "@nestjs/common/decorators";
 import { UserType } from "@prisma/client";
-import { ProductKeyDto, SignInUserDto, SignUpUserDto } from "../user.dto";
+import { User } from "src/decorators/user.decorator";
+import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../user.dto";
 import { AuthService } from "./auth.service";
 
 @Controller("auth")
@@ -25,5 +26,10 @@ export class AuthController {
   @Post("key")
   generateProductKey(@Body() productKeyDto: ProductKeyDto): Promise<string> {
     return this.authService.generateProductKeyDto(productKeyDto);
+  }
+
+  @Get("currentUserInfo")
+  async getCurrentUserInfo(@User() user: UserTokenData): Promise<UserDto> {
+    return await this.authService.getUserById(user.id);
   }
 }

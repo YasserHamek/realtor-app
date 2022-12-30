@@ -59,7 +59,7 @@ export class HomeController {
     const home: Home = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Update, you must be the realtor home to update it.");
+      throw new UnauthorizedException("Anauthorized Delete, you must be the realtor home to delete it.");
 
     return this.homeService.deleteHomeById(id);
   }

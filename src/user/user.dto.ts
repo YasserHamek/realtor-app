@@ -1,4 +1,4 @@
-import { Home, Message, UserType } from "@prisma/client";
+import { Home, Message, User, UserType } from "@prisma/client";
 import { Exclude } from "class-transformer";
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional } from "class-validator";
 
@@ -44,6 +44,10 @@ export class ProductKeyDto {
 }
 
 export class UserDto {
+  constructor(user: User) {
+    Object.assign(this, user);
+  }
+
   id: number;
 
   name: string;

@@ -1,3 +1,4 @@
+import { BadRequestException } from "@nestjs/common";
 import * as jwt from "jsonwebtoken";
 
 export class JwtUtils {
@@ -12,6 +13,8 @@ export class JwtUtils {
   }
 
   public static decodeToken(token: string) {
-    return token ? jwt.decode(token.replace("Baerer ", "")) : "";
+    const returnedToken = token ? jwt.decode(token.replace("Bearer ", "")) : "";
+    if (returnedToken) return returnedToken;
+    throw new BadRequestException("Unvalid Token, please use a valid one.");
   }
 }

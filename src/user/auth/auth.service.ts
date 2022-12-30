@@ -66,10 +66,11 @@ export class AuthService {
   }
 
   async getUserById(id: number): Promise<UserDto> {
-    return await this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
         id: id,
       },
     });
+    return new UserDto(user);
   }
 }
