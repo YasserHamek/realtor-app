@@ -83,4 +83,16 @@ export class HomeController {
   ): Promise<MessageDto> {
     return await this.homeService.addMessage(id, user, message);
   }
+
+  @Roles(UserType.REALTOR)
+  @UseGuards(AuthGuard, RolesGuards)
+  @Get(":id/messages")
+  async getAllMessages(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<MessageDto[]> {
+    const home: Home = await this.homeService.getHomeById(id);
+
+    if (home.realtorId != user.id)
+      throw new UnauthorizedException("Anauthorized Delete, you must be the realtor associated with this home to delete it.");
+
+    return this.homeService.getAllMessages(id);
+  }
 }

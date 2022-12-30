@@ -114,4 +114,14 @@ export class HomeService {
 
     return new MessageDto(addedMessage);
   }
+
+  async getAllMessages(homeId: number): Promise<MessageDto[]> {
+    const messages = await this.prismaService.message.findMany({
+      where: {
+        homeId,
+      },
+    });
+
+    return messages.map(message => new MessageDto(message));
+  }
 }
