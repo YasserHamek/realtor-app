@@ -21,7 +21,6 @@ export class JwtUtils {
   public static verifyToken(token: string): UserTokenData {
     try {
       const verifiedToken = jwt.verify(token.replace("Bearer ", ""), process.env.JSON_WEB_TOKEN_KEY);
-      console.log("___ _ _ _ verifiedToken : ", verifiedToken);
       return new UserTokenData(verifiedToken);
     } catch (exceptions) {
       throw new UnauthorizedException("User not authenticated.");

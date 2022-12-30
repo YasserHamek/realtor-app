@@ -16,7 +16,13 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("User not authenticated.");
     }
 
-    request.user = user;
+    request.user = {
+      id: userDb.id,
+      name: userDb.name,
+      phoneNumber: userDb.phoneNumber,
+      email: userDb.email,
+      userType: userDb.userType,
+    };
 
     return true;
   }
