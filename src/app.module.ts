@@ -16,10 +16,10 @@ import { tokenIterceptor } from "./interceptors/token.interceptor";
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor, //interceptor allows for exemple to use @Exclude() from class-transformer in dto
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: tokenIterceptor, //intercept request and retrieve user from token then add it into request
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: tokenIterceptor, //intercept request and retrieve user from token then add it into request
+    // },
   ],
 })
 export class AppModule {}

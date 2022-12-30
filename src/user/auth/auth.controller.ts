@@ -3,7 +3,7 @@ import { Get, Param, UseGuards } from "@nestjs/common/decorators";
 import { UserType } from "@prisma/client";
 import { Roles } from "src/decorators/roles.decorator";
 import { User } from "src/decorators/user.decorator";
-import { AuthGuard } from "src/Guards/auth.guard";
+import { AuthGuard } from "src/guards/auth.guard";
 import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../user.dto";
 import { AuthService } from "./auth.service";
 

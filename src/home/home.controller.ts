@@ -4,7 +4,7 @@ import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Home, PropertyType, UserType } from "@prisma/client";
 import { Roles } from "src/decorators/roles.decorator";
 import { User } from "src/decorators/user.decorator";
-import { AuthGuard } from "src/Guards/auth.guard";
+import { AuthGuard } from "src/guards/auth.guard";
 import { UserTokenData } from "src/user/user.dto";
 import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "./home.service";
