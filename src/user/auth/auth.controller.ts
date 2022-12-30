@@ -1,8 +1,9 @@
 import { Body, Controller, ParseEnumPipe, Post } from "@nestjs/common";
-import { Get, Param } from "@nestjs/common/decorators";
+import { Get, Param, UseGuards } from "@nestjs/common/decorators";
 import { UserType } from "@prisma/client";
 import { Roles } from "src/decorators/roles.decorator";
 import { User } from "src/decorators/user.decorator";
+import { AuthGuard } from "src/Guards/auth.guard";
 import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../user.dto";
 import { AuthService } from "./auth.service";
 
@@ -25,11 +26,13 @@ export class AuthController {
 
   //We give the key to user for signing up as REALTOR
   @Roles(UserType.ADMIN)
+  @UseGuards(AuthGuard)
   @Post("key")
   generateProductKey(@Body() productKeyDto: ProductKeyDto): Promise<string> {
     return this.authService.generateProductKeyDto(productKeyDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get("currentUserInfo")
   async getCurrentUserInfo(@User() user: UserTokenData): Promise<UserDto> {
     return await this.authService.getUserById(user.id);

@@ -74,7 +74,11 @@ export class UserDto {
   realtorMessages?: Message[];
 }
 
-export interface UserTokenData {
+export class UserTokenData {
+  constructor(userTokenData) {
+    Object.assign(this, userTokenData);
+  }
+
   id: number;
   name: string;
   iat: string;
