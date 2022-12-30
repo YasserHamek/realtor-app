@@ -7,7 +7,7 @@ import { User } from "src/decorators/user.decorator";
 import { AuthGuard } from "src/guards/auth.guard";
 import { RolesGuards } from "src/guards/roles.guard";
 import { UserTokenData } from "src/user/user.dto";
-import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
+import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "./home.service";
 
 @Controller("home")
@@ -56,7 +56,7 @@ export class HomeController {
     const home: Home = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Update, you must be the realtor home to update it.");
+      throw new UnauthorizedException("Anauthorized Update, you must be the realtor associated with this home to update it.");
 
     return this.homeService.updateHomeById(id, updateHomeDto);
   }
@@ -68,8 +68,19 @@ export class HomeController {
     const home: Home = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Delete, you must be the realtor home to delete it.");
+      throw new UnauthorizedException("Anauthorized Delete, you must be the realtor associated with this home to delete it.");
 
     return this.homeService.deleteHomeById(id);
+  }
+
+  @Roles(UserType.BUYER)
+  @UseGuards(AuthGuard, RolesGuards)
+  @Post(":id/inquire")
+  async inquire(
+    @Param("id", new ParseIntPipe()) id: number,
+    @User() user: UserTokenData,
+    @Body("message") { message },
+  ): Promise<MessageDto> {
+    return await this.homeService.addMessage(id, user, message);
   }
 }

@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Home } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
+import { UserTokenData } from "src/user/user.dto";
+import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
 
 @Injectable()
 export class HomeService {
@@ -97,5 +98,20 @@ export class HomeService {
       },
     });
     return home;
+  }
+
+  async addMessage(homeId: number, buyer: UserTokenData, message: string): Promise<MessageDto> {
+    const home = await this.getHomeById(homeId);
+
+    const addedMessage = await this.prismaService.message.create({
+      data: {
+        message: message,
+        buyerId: buyer.id,
+        homeId: home.id,
+        realtorId: home.realtorId,
+      },
+    });
+
+    return new MessageDto(addedMessage);
   }
 }

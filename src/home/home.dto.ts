@@ -2,6 +2,7 @@ import { PropertyType } from "@prisma/client";
 import { Exclude, Type } from "class-transformer";
 import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
+import { UserDto } from "src/user/user.dto";
 
 export class CreateHomeDto {
   @IsString()
@@ -70,4 +71,41 @@ export class HomeFilterDto {
     gte?: number;
     lte?: number;
   };
+}
+
+export class MessageDto {
+  constructor(private readonly messageDto: Partial<MessageDto>) {}
+
+  id: number;
+
+  @IsString()
+  @IsNotEmpty()
+  message: string;
+
+  @IsNumber()
+  @IsPositive()
+  buyerId: number;
+
+  @IsOptional()
+  buyer?: UserDto;
+
+  @IsNumber()
+  @IsPositive()
+  realtorId: number;
+
+  @IsOptional()
+  realtor?: UserDto;
+
+  @IsNumber()
+  @IsPositive()
+  homeId: number;
+
+  @IsOptional()
+  home?: CreateHomeDto;
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  updatedAt: Date;
 }

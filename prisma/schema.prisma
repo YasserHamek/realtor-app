@@ -31,6 +31,10 @@ model Message {
   buyer                 User @relation("BuyerMessage", fields: [buyerId], references: [id])
   realtorId             Int 
   realtor               User @relation("RealtorMessage", fields: [realtorId], references: [id])
+  homeId                Int
+  home                  Home @relation(fields: [homeId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model Home {
@@ -47,6 +51,7 @@ model Home {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   images                Image[]
+  messages              Message[]
 }
 
 model Image {
