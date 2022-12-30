@@ -1,7 +1,8 @@
 import { Body, Controller, Post, Get, Query, Put, Param, ParseIntPipe } from "@nestjs/common";
 import { Delete } from "@nestjs/common/decorators";
 import { UnauthorizedException } from "@nestjs/common/exceptions";
-import { Home, PropertyType } from "@prisma/client";
+import { Home, PropertyType, UserType } from "@prisma/client";
+import { Roles } from "src/decorators/roles.decorator";
 import { User } from "src/decorators/user.decorator";
 import { UserTokenData } from "src/user/user.dto";
 import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "./home.dto";
@@ -11,6 +12,7 @@ import { HomeService } from "./home.service";
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
+  @Roles(UserType.ADMIN, UserType.REALTOR)
   @Post()
   createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
     return this.homeService.createHome(createHomeDto, user.id);
@@ -40,6 +42,7 @@ export class HomeController {
     return this.homeService.getAllHomesByFilter(homeFilterDto);
   }
 
+  @Roles(UserType.ADMIN, UserType.REALTOR)
   @Put(":id")
   async updateHomeById(
     @Param("id", new ParseIntPipe()) id: number,
@@ -54,6 +57,7 @@ export class HomeController {
     return this.homeService.updateHomeById(id, updateHomeDto);
   }
 
+  @Roles(UserType.ADMIN, UserType.REALTOR)
   @Delete(":id")
   async deleteHomeById(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<UpdateHomeDto> {
     const home: Home = await this.homeService.getHomeById(id);

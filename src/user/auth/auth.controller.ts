@@ -1,6 +1,7 @@
 import { Body, Controller, ParseEnumPipe, Post } from "@nestjs/common";
 import { Get, Param } from "@nestjs/common/decorators";
 import { UserType } from "@prisma/client";
+import { Roles } from "src/decorators/roles.decorator";
 import { User } from "src/decorators/user.decorator";
 import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../user.dto";
 import { AuthService } from "./auth.service";
@@ -23,6 +24,7 @@ export class AuthController {
   }
 
   //We give the key to user for signing up as REALTOR
+  @Roles(UserType.ADMIN)
   @Post("key")
   generateProductKey(@Body() productKeyDto: ProductKeyDto): Promise<string> {
     return this.authService.generateProductKeyDto(productKeyDto);
