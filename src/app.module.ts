@@ -26,14 +26,3 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
   ],
 })
 export class AppModule {}
-
-// export const configuration = () => ({
-//   NODE_ENV: process.env.NODE_ENV,
-// });
-
-// @Module({
-//   imports: [
-//     ConfigModule.forRoot({
-//       envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`,
-//       load: [configuration],
-//     }),
