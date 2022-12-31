@@ -4,10 +4,7 @@ import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { HomeModule } from "./home/home.module";
-import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
-import { AuthGuard } from "./guards/auth.guard";
-import { RolesGuards } from "./guards/roles.guard";
-import { AuthService } from "./user/auth/auth.service";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 
 @Module({
   imports: [UserModule, PrismaModule, HomeModule],

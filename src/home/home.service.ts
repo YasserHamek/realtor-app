@@ -110,6 +110,15 @@ export class HomeService {
         homeId: home.id,
         realtorId: home.realtorId,
       },
+      include: {
+        buyer: {
+          select: {
+            email: true,
+            name: true,
+            phoneNumber: true,
+          },
+        },
+      },
     });
 
     return new MessageDto(addedMessage);
@@ -120,8 +129,16 @@ export class HomeService {
       where: {
         homeId,
       },
+      include: {
+        buyer: {
+          select: {
+            email: true,
+            name: true,
+            phoneNumber: true,
+          },
+        },
+      },
     });
-
     return messages.map(message => new MessageDto(message));
   }
 }

@@ -79,7 +79,7 @@ export class HomeController {
   async inquire(
     @Param("id", new ParseIntPipe()) id: number,
     @User() user: UserTokenData,
-    @Body("message") { message },
+    @Body() { message },
   ): Promise<MessageDto> {
     return await this.homeService.addMessage(id, user, message);
   }
@@ -87,7 +87,7 @@ export class HomeController {
   @Roles(UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   @Get(":id/messages")
-  async getAllMessages(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<MessageDto[]> {
+  async getAllHomeMessages(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<MessageDto[]> {
     const home: Home = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
