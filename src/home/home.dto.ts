@@ -12,7 +12,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
-import { UserDto } from "src/user/user.dto";
+import { UserDto } from "../user/user.dto";
 
 export class CreateHomeDto {
   @IsString()

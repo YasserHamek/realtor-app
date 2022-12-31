@@ -1,7 +1,7 @@
 import { HttpException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { PropertyType } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import { HomeFilterDto } from "./home.dto";
 import { HomeService } from "./home.service";
 

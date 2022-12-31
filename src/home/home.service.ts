@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Home } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
-import { UserTokenData } from "src/user/user.dto";
+import { PrismaService } from "../prisma/prisma.service";
+import { UserTokenData } from "../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
 
 @Injectable()

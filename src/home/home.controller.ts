@@ -2,11 +2,11 @@ import { Body, Controller, Post, Get, Query, Put, Param, ParseIntPipe } from "@n
 import { Delete, UseGuards } from "@nestjs/common/decorators";
 import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Home, PropertyType, UserType } from "@prisma/client";
-import { Roles } from "src/decorators/roles.decorator";
-import { User } from "src/decorators/user.decorator";
-import { AuthGuard } from "src/guards/auth.guard";
-import { RolesGuards } from "src/guards/roles.guard";
-import { UserTokenData } from "src/user/user.dto";
+import { Roles } from "../decorators/roles.decorator";
+import { User } from "../decorators/user.decorator";
+import { AuthGuard } from "../guards/auth.guard";
+import { RolesGuards } from "../guards/roles.guard";
+import { UserTokenData } from "../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "./home.service";
 
