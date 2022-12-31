@@ -4,9 +4,11 @@ import * as request from "supertest";
 import { AppModule } from "../src/app.module";
 import { PrismaModule } from "../src/prisma/prisma.module";
 import { UserModule } from "../src/user/user.module";
+import { PrismaService } from "../src/prisma/prisma.service";
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,10 +16,12 @@ describe("AppController (e2e)", () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    prismaService = moduleFixture.get<PrismaService>(PrismaService);
     await app.init();
   });
 
   it("/ (GET)", () => {
-    return request(app.getHttpServer()).get("/").expect(200).expect("Hello Nest!");
+    prismaService.cleanDatabase();
+    //return request(app.getHttpServer()).get("/").expect(200).expect("Hello Nest!");
   });
 });

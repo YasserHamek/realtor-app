@@ -5,9 +5,13 @@ import { UserModule } from "./user/user.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { HomeModule } from "./home/home.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
+import { ConfigModule } from "@nestjs/config";
+import { getEnvPath } from "./common/helper/env.helper";
+
+const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
 @Module({
-  imports: [UserModule, PrismaModule, HomeModule],
+  imports: [ConfigModule.forRoot({ envFilePath, isGlobal: true }), UserModule, PrismaModule, HomeModule],
   controllers: [AppController],
   providers: [
     AppService,
@@ -22,3 +26,14 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
   ],
 })
 export class AppModule {}
+
+// export const configuration = () => ({
+//   NODE_ENV: process.env.NODE_ENV,
+// });
+
+// @Module({
+//   imports: [
+//     ConfigModule.forRoot({
+//       envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`,
+//       load: [configuration],
+//     }),
