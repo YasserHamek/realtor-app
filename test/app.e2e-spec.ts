@@ -21,7 +21,7 @@ describe("AppController (e2e)", () => {
   });
 
   it("/ (GET)", () => {
-    prismaService.cleanDatabase();
+    //prismaService.cleanDatabase();
     //return request(app.getHttpServer()).get("/").expect(200).expect("Hello Nest!");
   });
 });

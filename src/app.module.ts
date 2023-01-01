@@ -7,11 +7,18 @@ import { HomeModule } from "./home/home.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { ConfigModule } from "@nestjs/config";
 import { getEnvPath } from "./common/helper/env.helper";
+import { MongooseModule } from "@nestjs/mongoose";
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
 @Module({
-  imports: [ConfigModule.forRoot({ envFilePath, isGlobal: true }), UserModule, PrismaModule, HomeModule],
+  imports: [
+    ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+    MongooseModule.forRoot(process.env.MONGO_DATABASE_URL),
+    UserModule,
+    PrismaModule,
+    HomeModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

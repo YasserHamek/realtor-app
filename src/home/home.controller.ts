@@ -2,10 +2,10 @@ import { Body, Controller, Post, Get, Query, Put, Param, ParseIntPipe } from "@n
 import { Delete, UseGuards } from "@nestjs/common/decorators";
 import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Home, PropertyType, UserType } from "@prisma/client";
-import { Roles } from "../decorators/roles.decorator";
-import { User } from "../decorators/user.decorator";
-import { AuthGuard } from "../guards/auth.guard";
-import { RolesGuards } from "../guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
+import { User } from "../common/decorators/user.decorator";
+import { AuthGuard } from "../common/guards/auth.guard";
+import { RolesGuards } from "../common/guards/roles.guard";
 import { UserTokenData } from "../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "./home.service";
@@ -14,11 +14,11 @@ import { HomeService } from "./home.service";
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
-  @Roles(UserType.ADMIN, UserType.REALTOR)
-  @UseGuards(AuthGuard, RolesGuards)
+  //@Roles(UserType.ADMIN, UserType.REALTOR)
+  //@UseGuards(AuthGuard, RolesGuards)
   @Post()
   createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
-    return this.homeService.createHome(createHomeDto, user.id);
+    return this.homeService.createHomeV2(createHomeDto, null);
   }
 
   @Get()

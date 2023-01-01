@@ -1,10 +1,10 @@
 import { Body, Controller, ParseEnumPipe, Post } from "@nestjs/common";
 import { Get, Param, UseGuards } from "@nestjs/common/decorators";
 import { UserType } from "@prisma/client";
-import { Roles } from "../../decorators/roles.decorator";
-import { User } from "../../decorators/user.decorator";
-import { AuthGuard } from "../../guards/auth.guard";
-import { RolesGuards } from "../../guards/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
+import { User } from "../../common/decorators/user.decorator";
+import { AuthGuard } from "../../common/guards/auth.guard";
+import { RolesGuards } from "../../common/guards/roles.guard";
 import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../user.dto";
 import { AuthService } from "./auth.service";
 

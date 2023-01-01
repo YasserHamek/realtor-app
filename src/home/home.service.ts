@@ -1,13 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import { Home } from "@prisma/client";
+import { Model } from "mongoose";
+import { deprecate } from "util";
 import { PrismaService } from "../prisma/prisma.service";
 import { UserTokenData } from "../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
+import { HomeDocument } from "./home.schema";
 
 @Injectable()
 export class HomeService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(@InjectModel("Home") private homeModel: Model<HomeDocument>, private readonly prismaService: PrismaService) {}
 
+  async createHomeV2(createHomeDto: CreateHomeDto, id: number): Promise<HomeDocument> {
+    const newHome = new this.homeModel(createHomeDto);
+    return newHome.save();
+  }
+
+  /**
+   * @deprecated use createHomeV2 instead
+   */
   async createHome(createHomeDto: CreateHomeDto, id: number) {
     const createdHome: Home = await this.prismaService.home.create({
       data: {
