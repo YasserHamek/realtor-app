@@ -37,26 +37,7 @@ export class HomeService {
   }
 
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
-    const homes: any[] = await this.prismaService.home.findMany({
-      select: {
-        adress: true,
-        city: true,
-        id: true,
-        landSize: true,
-        numberOfBathrooms: true,
-        numberOfBedrooms: true,
-        price: true,
-        propertyType: true,
-        realtorId: true,
-        images: {
-          select: {
-            url: true,
-            id: true,
-          },
-        },
-      },
-      where: homeFilterDto,
-    });
+    const homes: any[] = await this.homeRepository.getAllHomesByFilter(homeFilterDto);
 
     if (!homes || homes.length === 0) {
       throw new HttpException("No home is found with this filter", HttpStatus.NOT_FOUND);
@@ -66,21 +47,9 @@ export class HomeService {
   }
 
   async updateHomeById(id: number, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
-    const updatedHome: UpdateHomeDto = await this.prismaService.home.update({
-      where: {
-        id,
-      },
-      data: {
-        adress: updateHomeDto.adress,
-        city: updateHomeDto.city,
-        landSize: updateHomeDto.landSize,
-        numberOfBathrooms: updateHomeDto.numberOfBathrooms,
-        numberOfBedrooms: updateHomeDto.numberOfBedrooms,
-        price: updateHomeDto.price,
-        propertyType: updateHomeDto.propertyType,
-      },
-    });
-    return new UpdateHomeDto(updatedHome);
+    const updatedHomeDto = await this.homeRepository.updateHomeById(id, updateHomeDto);
+
+    return new UpdateHomeDto(updatedHomeDto);
   }
 
   async deleteHomeById(id: number): Promise<UpdateHomeDto> {
