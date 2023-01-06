@@ -2,15 +2,19 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Home } from "@prisma/client";
 import { Model } from "mongoose";
-import { deprecate } from "util";
 import { PrismaService } from "../prisma/prisma.service";
 import { UserTokenData } from "../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
+import { HomeRepository } from "./home.repository";
 import { HomeDocument } from "./home.schema";
 
 @Injectable()
 export class HomeService {
-  constructor(@InjectModel("Home") private homeModel: Model<HomeDocument>, private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectModel("Home") private homeModel: Model<HomeDocument>,
+    private readonly homeRepository: HomeRepository,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   async createHomeV2(createHomeDto: CreateHomeDto, id: number): Promise<HomeDocument> {
     const newHome = new this.homeModel(createHomeDto);
@@ -21,28 +25,13 @@ export class HomeService {
    * @deprecated use createHomeV2 instead
    */
   async createHome(createHomeDto: CreateHomeDto, id: number) {
-    const createdHome: Home = await this.prismaService.home.create({
-      data: {
-        adress: createHomeDto.adress,
-        city: createHomeDto.city,
-        landSize: createHomeDto.landSize,
-        numberOfBathrooms: createHomeDto.numberOfBathrooms,
-        numberOfBedrooms: createHomeDto.numberOfBedrooms,
-        price: createHomeDto.price,
-        propertyType: createHomeDto.propertyType,
-        realtorId: id,
-      },
-    });
+    const createdHome: Home = await this.homeRepository.createHome(createHomeDto, id);
 
-    const images = createHomeDto.images.map(image => {
-      return { url: image.url, homeId: createdHome.id };
-    });
-
-    this.prismaService.image
-      .createMany({
-        data: images,
-      })
-      .then();
+    this.homeRepository.createImages(
+      createHomeDto.images.map(image => {
+        return { url: image.url, homeId: createdHome.id };
+      }),
+    );
 
     return createdHome;
   }

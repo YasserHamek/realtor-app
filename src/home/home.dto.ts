@@ -56,7 +56,7 @@ export class Image {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  homeId?: number;
+  homeId: number;
 }
 
 export class UpdateHomeDto extends PartialType(CreateHomeDto) {
