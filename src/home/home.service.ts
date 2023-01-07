@@ -35,7 +35,6 @@ export class HomeService {
     return createdHome;
   }
 
-<<<<<<< Updated upstream
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
     const homes: any[] = await this.homeRepository.getAllHomesByFilter(homeFilterDto);
 
@@ -46,16 +45,12 @@ export class HomeService {
     return homes.map(home => new UpdateHomeDto(home));
   }
 
-  async updateHomeById(id: number, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
-    const updatedHomeDto = await this.homeRepository.updateHomeById(id, updateHomeDto);
-=======
   async getHomeById(id: number): Promise<CreateHomeDto> {
     return await this.homeRepository.getById(id);
   }
 
   async updateHomeById(id: number, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
     const updatedHomeDto = await this.homeRepository.updateById(id, updateHomeDto);
->>>>>>> Stashed changes
 
     return new UpdateHomeDto(updatedHomeDto);
   }
@@ -64,16 +59,6 @@ export class HomeService {
     const home = await this.homeRepository.deleteById(id);
 
     return new UpdateHomeDto(home);
-  }
-
-  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
-    const homes: any[] = await this.homeRepository.getAllHomesByFilter(homeFilterDto);
-
-    if (!homes || homes.length === 0) {
-      throw new HttpException("No home is found with this filter", HttpStatus.NOT_FOUND);
-    }
-
-    return homes.map(home => new UpdateHomeDto(home));
   }
 
   async addMessage(homeId: number, buyer: UserTokenData, message: string): Promise<MessageDto> {
