@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserTokenData } from "../user/user.dto";
@@ -10,9 +10,9 @@ import { IHomeRepository, IImageRepository, IMessageRepository } from "./reposit
 export class HomeService {
   constructor(
     @InjectModel("Home") private homeModel: Model<HomeDocument>,
-    private readonly homeRepository: IHomeRepository,
-    private readonly imageRepository: IImageRepository,
-    private readonly messageRepository: IMessageRepository,
+    @Inject("IHomeRepository") private readonly homeRepository: IHomeRepository,
+    @Inject("IImageRepository") private readonly imageRepository: IImageRepository,
+    @Inject("IMessageRepository") private readonly messageRepository: IMessageRepository,
   ) {}
 
   // async createHomeV2(createHomeDto: CreateHomeDto, id: number): Promise<HomeDocument> {
