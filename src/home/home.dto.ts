@@ -15,6 +15,11 @@ import { PartialType } from "@nestjs/mapped-types";
 import { UserDto } from "../user/user.dto";
 
 export class CreateHomeDto {
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  id?: number;
+
   @IsString()
   @IsNotEmpty()
   adress: string;
@@ -46,6 +51,11 @@ export class CreateHomeDto {
   @ValidateNested({ each: true })
   @Type(() => Image)
   images?: Image[];
+
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  realtorId?: number;
 }
 
 export class Image {
@@ -88,7 +98,7 @@ export class MessageDto {
     Object.assign(this, messageDto);
   }
 
-  id: number;
+  id?: number;
 
   @IsString()
   @IsNotEmpty()
@@ -116,8 +126,8 @@ export class MessageDto {
   home?: CreateHomeDto;
 
   @Exclude()
-  createdAt: Date;
+  createdAt?: Date;
 
   @Exclude()
-  updatedAt: Date;
+  updatedAt?: Date;
 }

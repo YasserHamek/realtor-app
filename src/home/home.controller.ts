@@ -18,7 +18,8 @@ export class HomeController {
   //@UseGuards(AuthGuard, RolesGuards)
   @Post()
   createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
-    return this.homeService.createHomeV2(createHomeDto, null);
+    createHomeDto.realtorId = user.id;
+    return this.homeService.createHome(createHomeDto);
   }
 
   @Get()
@@ -53,7 +54,7 @@ export class HomeController {
     @Body() updateHomeDto: UpdateHomeDto,
     @User() user: UserTokenData,
   ): Promise<UpdateHomeDto> {
-    const home: Home = await this.homeService.getHomeById(id);
+    const home: UpdateHomeDto = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
       throw new UnauthorizedException("Anauthorized Update, you must be the realtor associated with this home to update it.");
@@ -65,7 +66,7 @@ export class HomeController {
   @UseGuards(AuthGuard, RolesGuards)
   @Delete(":id")
   async deleteHomeById(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<UpdateHomeDto> {
-    const home: Home = await this.homeService.getHomeById(id);
+    const home: UpdateHomeDto = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
       throw new UnauthorizedException("Anauthorized Delete, you must be the realtor associated with this home to delete it.");
@@ -88,7 +89,7 @@ export class HomeController {
   @UseGuards(AuthGuard, RolesGuards)
   @Get(":id/messages")
   async getAllHomeMessages(@Param("id", new ParseIntPipe()) id: number, @User() user: UserTokenData): Promise<MessageDto[]> {
-    const home: Home = await this.homeService.getHomeById(id);
+    const home: UpdateHomeDto = await this.homeService.getHomeById(id);
 
     if (home.realtorId != user.id)
       throw new UnauthorizedException("Anauthorized Delete, you must be the realtor associated with this home to delete it.");
