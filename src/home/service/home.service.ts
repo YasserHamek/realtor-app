@@ -1,18 +1,14 @@
 import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { UserTokenData } from "../user/user.dto";
-import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
-import { HomeDocument } from "./home.schema";
-import { IHomeRepository, IImageRepository, IMessageRepository } from "./repository/repository.interface";
+import { UserTokenData } from "../../user/user.dto";
+import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
+import { IHomeRepository, IImageRepository, IMessageRepository } from "../repository/repository.interface";
 
 @Injectable()
 export class HomeService {
   constructor(
-    @InjectModel("Home") private homeModel: Model<HomeDocument>,
-    @Inject("IHomeRepository") private readonly homeRepository: IHomeRepository,
+    @Inject("IHomeRepository") private readonly homeRepository: IHomeRepository<any>,
     @Inject("IImageRepository") private readonly imageRepository: IImageRepository,
-    @Inject("IMessageRepository") private readonly messageRepository: IMessageRepository,
+    @Inject("IMessageRepository") private readonly messageRepository: IMessageRepository<any>,
   ) {}
 
   // async createHomeV2(createHomeDto: CreateHomeDto, id: number): Promise<HomeDocument> {
@@ -26,11 +22,11 @@ export class HomeService {
   async createHome(createHomeDto: CreateHomeDto) {
     const createdHome: CreateHomeDto = await this.homeRepository.create(createHomeDto);
 
-    await this.imageRepository.createImages(
-      createHomeDto.images.map(image => {
-        return { url: image.url, homeId: createdHome.id };
-      }),
-    );
+    // await this.imageRepository.createImages(
+    //   createHomeDto.images.map(image => {
+    //     return { url: image.url, homeId: createdHome.id };
+    //   }),
+    // );
 
     return createdHome;
   }

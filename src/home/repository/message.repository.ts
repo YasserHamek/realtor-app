@@ -1,8 +1,8 @@
 import { PrismaService } from "../../prisma/prisma.service";
-import { MessageDto } from "../home.dto";
+import { MessageDto } from "../controller/home.dto";
 import { IMessageRepository } from "./repository.interface";
 
-export class MessageRepository implements IMessageRepository {
+export class MessageRepository implements IMessageRepository<MessageDto> {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(messageDto: Partial<MessageDto>): Promise<MessageDto> {

@@ -6,7 +6,7 @@
           "request": "launch",
           "name": "Debug Nest Framework",
           "args": [
-              "${workspaceFolder}/..main.ts"
+              "${workspaceFolder}/src/main.ts"
           ],
           "runtimeArgs": [
               "--nolazy",
@@ -16,7 +16,7 @@
               "tsconfig-paths/register"
           ],
           "sourceMaps": true,
-          "envFile": "${workspaceFolder}/.env",
+          "envFile": "${workspaceFolder}/src/common/envs/.env",
           "cwd": "${workspaceRoot}",
           "console": "integratedTerminal",
           "protocol": "inspector"

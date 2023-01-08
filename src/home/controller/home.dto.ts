@@ -12,7 +12,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
-import { UserDto } from "../user/user.dto";
+import { UserDto } from "../../user/user.dto";
 
 export class CreateHomeDto {
   @IsNumber()
@@ -62,11 +62,6 @@ export class Image {
   @IsString()
   @IsNotEmpty()
   url: string;
-
-  @IsNumber()
-  @IsPositive()
-  @IsOptional()
-  homeId: number;
 }
 
 export class UpdateHomeDto extends PartialType(CreateHomeDto) {
