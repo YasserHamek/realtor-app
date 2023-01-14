@@ -9,10 +9,13 @@ import { RolesGuards } from "../../common/guards/roles.guard";
 import { UserTokenData } from "../../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "../service/home.service";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { IHome } from "../schema/home.schema";
 
 @Controller("home")
 export class HomeController {
-  constructor(private readonly homeService: HomeService) {}
+  constructor(private readonly homeService: HomeService, @InjectModel("Home") private homeModel: Model<IHome>) {}
 
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
@@ -24,12 +27,12 @@ export class HomeController {
   }
 
   @Get()
-  getAllHomes(
+  async getAllHomes(
     @Query("city") city: string,
     @Query("propertyType") propertyType: PropertyType,
     @Query("minPrice") minPrice: string,
     @Query("maxPrice") maxPrice: string,
-  ): Promise<UpdateHomeDto[]> {
+  ): Promise<any> {
     const price =
       minPrice || maxPrice
         ? {

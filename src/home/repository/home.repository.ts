@@ -13,11 +13,11 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
 
   async create(createHomeDto: CreateHomeDto): Promise<IHome> {
     const home = new this.homeModel(createHomeDto);
-    return await home.save();
+    return (await home.save()).toObject();
   }
 
-  async getById(id: number): Promise<HomeDocument> {
-    return await this.homeModel.findById(id).exec();
+  async getById(id: number): Promise<IHome> {
+    return (await this.homeModel.findById(id).exec()).toObject();
   }
 
   async updateById(id: number, updateHomeDto: UpdateHomeDto): Promise<HomeDocument> {
@@ -48,7 +48,7 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
   }
 
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<any> {
-    return null;
+    return await this.homeModel.find().lean();
     //   return await this.prismaService.home.findMany({
     //     select: {
     //       adress: true,

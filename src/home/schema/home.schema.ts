@@ -25,11 +25,12 @@ export const HomeSchema = new Schema(
       enum: ["RESIDENTIAL", "CONDO"],
     },
 
-    // images: [
-    //   {
-    //     url: String,
-    //   },
-    // ],
+    // images will be nested subdocument
+    images: [
+      new Schema({
+        url: String,
+      }),
+    ],
 
     realtor: {
       type: Schema.Types.ObjectId,
@@ -68,7 +69,7 @@ export const MessageSchema = new Schema(
     },
   },
   {
-    timestamps: true, // this will add createdAt and updatedAt automatically
+    timestamps: true,
   },
 );
 

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { UserTokenData } from "../../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
 import { IHomeRepository, IImageRepository, IMessageRepository } from "../repository/repository.interface";
@@ -11,34 +11,20 @@ export class HomeService {
     @Inject("IMessageRepository") private readonly messageRepository: IMessageRepository<any>,
   ) {}
 
-  // async createHomeV2(createHomeDto: CreateHomeDto, id: number): Promise<HomeDocument> {
-  //   const newHome = new this.homeModel(createHomeDto);
-  //   return newHome.save();
-  // }
-
-  // /**
-  //  * @deprecated use createHomeV2 instead
-  //  */
   async createHome(createHomeDto: CreateHomeDto) {
     const createdHome: CreateHomeDto = await this.homeRepository.create(createHomeDto);
 
-    // await this.imageRepository.createImages(
-    //   createHomeDto.images.map(image => {
-    //     return { url: image.url, homeId: createdHome.id };
-    //   }),
-    // );
-
-    return createdHome;
+    return new UpdateHomeDto(createdHome);
   }
 
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
-    const homes: any[] = await this.homeRepository.getAllHomesByFilter(homeFilterDto);
+    return await this.homeRepository.getAllHomesByFilter(homeFilterDto);
 
-    if (!homes || homes.length === 0) {
-      throw new HttpException("No home is found with this filter", HttpStatus.NOT_FOUND);
-    }
+    // if (!homes || homes.length === 0) {
+    //   throw new HttpException("No home is found with this filter", HttpStatus.NOT_FOUND);
+    // }
 
-    return homes.map(home => new UpdateHomeDto(home));
+    // return homes.map(home => new UpdateHomeDto(home));
   }
 
   async getHomeById(id: number): Promise<CreateHomeDto> {

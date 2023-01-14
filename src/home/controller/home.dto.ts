@@ -1,16 +1,6 @@
 import { PropertyType } from "@prisma/client";
-import { Exclude, Type } from "class-transformer";
-import {
-  IsArray,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-  ValidateNested,
-} from "class-validator";
+import { Exclude, Expose, Type } from "class-transformer";
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
 import { UserDto } from "../../user/user.dto";
 
@@ -18,7 +8,13 @@ export class CreateHomeDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
+  @Exclude()
   id?: number;
+
+  @IsNotEmpty()
+  @IsOptional()
+  @Exclude()
+  _id?: object;
 
   @IsString()
   @IsNotEmpty()
@@ -59,9 +55,25 @@ export class CreateHomeDto {
 }
 
 export class Image {
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  @Exclude()
+  id?: number;
+
   @IsString()
   @IsNotEmpty()
   url: string;
+
+  @IsNotEmpty()
+  @IsOptional()
+  @Exclude()
+  _id?: object;
+
+  @Expose({ name: "id" })
+  getImageId?() {
+    return this._id ? this._id.valueOf() : this.id;
+  }
 }
 
 export class UpdateHomeDto extends PartialType(CreateHomeDto) {
@@ -70,6 +82,11 @@ export class UpdateHomeDto extends PartialType(CreateHomeDto) {
 
   @Exclude()
   updatedAt?: Date;
+
+  @Expose({ name: "id" })
+  getHomeId?() {
+    return this._id ? this._id.valueOf() : this.id;
+  }
 
   constructor(updateHomeDto: Partial<UpdateHomeDto>) {
     super();
