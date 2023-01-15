@@ -22,8 +22,7 @@ export class HomeController {
   @Post()
   async createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
     createHomeDto.realtorId = user.id;
-    const createdHomeDto = await this.homeService.createHome(createHomeDto);
-    return createdHomeDto;
+    return await this.homeService.createHome(createHomeDto);
   }
 
   @Get()

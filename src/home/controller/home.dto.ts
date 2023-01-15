@@ -46,12 +46,17 @@ export class CreateHomeDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Image)
+  @IsOptional()
   images?: Image[];
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   realtorId?: number;
+
+  constructor(createHomeDto: Partial<CreateHomeDto>) {
+    Object.assign(this, createHomeDto);
+  }
 }
 
 export class Image {
@@ -61,18 +66,22 @@ export class Image {
   @Exclude()
   id?: number;
 
-  @IsString()
-  @IsNotEmpty()
-  url: string;
-
   @IsNotEmpty()
   @IsOptional()
   @Exclude()
   _id?: object;
 
+  @IsString()
+  @IsNotEmpty()
+  url: string;
+
   @Expose({ name: "id" })
   getImageId?() {
     return this._id ? this._id.valueOf() : this.id;
+  }
+
+  constructor(image: Partial<Image>) {
+    Object.assign(this, image);
   }
 }
 
@@ -86,6 +95,13 @@ export class UpdateHomeDto extends PartialType(CreateHomeDto) {
   @Expose({ name: "id" })
   getHomeId?() {
     return this._id ? this._id.valueOf() : this.id;
+  }
+
+  @Expose({ name: "images" })
+  getImages?() {
+    return this.images.map(image => {
+      return new Image(image);
+    });
   }
 
   constructor(updateHomeDto: Partial<UpdateHomeDto>) {

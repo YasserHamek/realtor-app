@@ -16,6 +16,10 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
     return (await home.save()).toObject();
   }
 
+  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<any> {
+    return await this.homeModel.find(this.getQuery(homeFilterDto)).lean();
+  }
+
   async getById(id: number): Promise<IHome> {
     return (await this.homeModel.findById(id).exec()).toObject();
   }
@@ -47,28 +51,15 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
     // });
   }
 
-  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<any> {
-    return await this.homeModel.find().lean();
-    //   return await this.prismaService.home.findMany({
-    //     select: {
-    //       adress: true,
-    //       city: true,
-    //       id: true,
-    //       landSize: true,
-    //       numberOfBathrooms: true,
-    //       numberOfBedrooms: true,
-    //       price: true,
-    //       propertyType: true,
-    //       realtorId: true,
-    //       images: {
-    //         select: {
-    //           url: true,
-    //           id: true,
-    //         },
-    //       },
-    //     },
-    //     where: homeFilterDto,
-    //   });
+  private getQuery(homeFilterDto: HomeFilterDto) {
+    const query: any = {};
+
+    if (homeFilterDto.price.gte) query.price = { $gte: homeFilterDto.price.gte };
+    if (homeFilterDto.price.lte) query.price = { ...query.price, $lte: homeFilterDto.price.lte };
+    if (homeFilterDto.city) query.city = homeFilterDto.city;
+    if (homeFilterDto.propertyType) query.propertyType = homeFilterDto.propertyType;
+
+    return query;
   }
 }
 

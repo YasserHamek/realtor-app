@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { UserTokenData } from "../../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
 import { IHomeRepository, IImageRepository, IMessageRepository } from "../repository/repository.interface";
@@ -13,18 +13,17 @@ export class HomeService {
 
   async createHome(createHomeDto: CreateHomeDto) {
     const createdHome: CreateHomeDto = await this.homeRepository.create(createHomeDto);
-
     return new UpdateHomeDto(createdHome);
   }
 
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
-    return await this.homeRepository.getAllHomesByFilter(homeFilterDto);
+    const homes = await this.homeRepository.getAllHomesByFilter(homeFilterDto);
 
-    // if (!homes || homes.length === 0) {
-    //   throw new HttpException("No home is found with this filter", HttpStatus.NOT_FOUND);
-    // }
+    if (!homes || homes.length === 0) {
+      throw new HttpException("No home is found with this filter", HttpStatus.NOT_FOUND);
+    }
 
-    // return homes.map(home => new UpdateHomeDto(home));
+    return homes.map(home => new UpdateHomeDto(home));
   }
 
   async getHomeById(id: number): Promise<CreateHomeDto> {
