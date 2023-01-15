@@ -54,8 +54,8 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
   private getQuery(homeFilterDto: HomeFilterDto) {
     const query: any = {};
 
-    if (homeFilterDto.price.gte) query.price = { $gte: homeFilterDto.price.gte };
-    if (homeFilterDto.price.lte) query.price = { ...query.price, $lte: homeFilterDto.price.lte };
+    if (homeFilterDto.price?.gte) query.price = { $gte: homeFilterDto.price.gte };
+    if (homeFilterDto.price?.lte) query.price = { ...query.price, $lte: homeFilterDto.price.lte };
     if (homeFilterDto.city) query.city = homeFilterDto.city;
     if (homeFilterDto.propertyType) query.propertyType = homeFilterDto.propertyType;
 
