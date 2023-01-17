@@ -3,11 +3,11 @@ import { CreateHomeDto, HomeFilterDto, Image, MessageDto } from "../controller/h
 export interface GenericRepository<T, R> {
   create(itemDto: T): Promise<R>;
 
-  getById(id: number): Promise<R>;
+  getById(id: string): Promise<R>;
 
-  updateById(id: number, updateHomeDto: Partial<T>): Promise<Partial<R>>;
+  updateById(id: string, updateHomeDto: Partial<T>): Promise<Partial<R>>;
 
-  deleteById(id: number): Promise<Partial<R>>;
+  deleteById(id: string): Promise<Partial<R>>;
 }
 
 export interface IHomeRepository<R> extends GenericRepository<CreateHomeDto, R> {
@@ -19,5 +19,5 @@ export interface IImageRepository {
 }
 
 export interface IMessageRepository<R> extends GenericRepository<MessageDto, R> {
-  getAllMessagesByHomeId(homeId: number): Promise<MessageDto[]>;
+  getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]>;
 }

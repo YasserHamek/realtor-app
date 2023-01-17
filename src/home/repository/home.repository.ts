@@ -16,15 +16,15 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
     return (await home.save()).toObject();
   }
 
-  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<any> {
+  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<IHome[]> {
     return await this.homeModel.find(this.getQuery(homeFilterDto)).lean();
   }
 
-  async getById(id: number): Promise<IHome> {
+  async getById(id: string): Promise<IHome> {
     return (await this.homeModel.findById(id).exec()).toObject();
   }
 
-  async updateById(id: number, updateHomeDto: UpdateHomeDto): Promise<HomeDocument> {
+  async updateById(id: string, updateHomeDto: UpdateHomeDto): Promise<HomeDocument> {
     return null;
     // return await this.prismaService.home.update({
     //   where: {
@@ -42,7 +42,7 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
     // });
   }
 
-  async deleteById(id: number): Promise<HomeDocument> {
+  async deleteById(id: string): Promise<HomeDocument> {
     return null;
     // return await this.prismaService.home.delete({
     //   where: {
@@ -82,15 +82,15 @@ export class HomeRepositoryPrisma implements IHomeRepository<CreateHomeDto> {
     });
   }
 
-  async getById(id: number): Promise<Home> {
+  async getById(id: string): Promise<Home> {
     return await this.prismaService.home.findUnique({
       where: {
-        id: id,
+        id: parseInt(id),
       },
     });
   }
 
-  async updateById(id: number, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
+  async updateById(id: string, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
     return await this.prismaService.home.update({
       where: {
         id: updateHomeDto.id,
@@ -107,10 +107,10 @@ export class HomeRepositoryPrisma implements IHomeRepository<CreateHomeDto> {
     });
   }
 
-  async deleteById(id: number): Promise<UpdateHomeDto> {
+  async deleteById(id: string): Promise<UpdateHomeDto> {
     return await this.prismaService.home.delete({
       where: {
-        id: id,
+        id: parseInt(id),
       },
     });
   }

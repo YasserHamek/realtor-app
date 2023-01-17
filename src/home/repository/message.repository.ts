@@ -25,10 +25,10 @@ export class MessageRepository implements IMessageRepository<MessageDto> {
     });
   }
 
-  async getAllMessagesByHomeId(homeId: number): Promise<MessageDto[]> {
+  async getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]> {
     return await this.prismaService.message.findMany({
       where: {
-        homeId,
+        id: parseInt(homeId),
       },
       include: {
         buyer: {
@@ -42,13 +42,13 @@ export class MessageRepository implements IMessageRepository<MessageDto> {
     });
   }
 
-  getById(id: number): Promise<MessageDto> {
+  getById(id: string): Promise<MessageDto> {
     throw new Error("Method not implemented.");
   }
-  updateById(id: number, updateHomeDto: MessageDto): Promise<MessageDto> {
+  updateById(id: string, updateHomeDto: MessageDto): Promise<MessageDto> {
     throw new Error("Method not implemented.");
   }
-  deleteById(id: number): Promise<MessageDto> {
+  deleteById(id: string): Promise<MessageDto> {
     throw new Error("Method not implemented.");
   }
 }

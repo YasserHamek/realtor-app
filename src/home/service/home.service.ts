@@ -26,23 +26,24 @@ export class HomeService {
     return homes.map(home => new UpdateHomeDto(home));
   }
 
-  async getHomeById(id: number): Promise<CreateHomeDto> {
-    return await this.homeRepository.getById(id);
+  async getHomeById(id: string): Promise<UpdateHomeDto> {
+    const home = await this.homeRepository.getById(id);
+    return new UpdateHomeDto(home);
   }
 
-  async updateHomeById(id: number, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
+  async updateHomeById(id: string, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
     const updatedHomeDto = await this.homeRepository.updateById(id, updateHomeDto);
 
     return new UpdateHomeDto(updatedHomeDto);
   }
 
-  async deleteHomeById(id: number): Promise<UpdateHomeDto> {
+  async deleteHomeById(id: string): Promise<UpdateHomeDto> {
     const home = await this.homeRepository.deleteById(id);
 
     return new UpdateHomeDto(home);
   }
 
-  async addMessage(homeId: number, buyer: UserTokenData, message: string): Promise<MessageDto> {
+  async addMessage(homeId: string, buyer: UserTokenData, message: string): Promise<MessageDto> {
     const home = await this.getHomeById(homeId);
 
     const addedMessage = await this.messageRepository.create({
@@ -55,7 +56,7 @@ export class HomeService {
     return new MessageDto(addedMessage);
   }
 
-  async getAllMessages(homeId: number): Promise<MessageDto[]> {
+  async getAllMessages(homeId: string): Promise<MessageDto[]> {
     const messages = await this.messageRepository.getAllMessagesByHomeId(homeId);
 
     return messages.map(message => new MessageDto(message));
