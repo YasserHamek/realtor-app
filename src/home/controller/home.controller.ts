@@ -56,7 +56,7 @@ export class HomeController {
     return this.homeService.getHomeById(homeId);
   }
 
-  @Put(":id")
+  @Put(":homeId")
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async updateHomeById(
@@ -64,12 +64,7 @@ export class HomeController {
     @Body() updateHomeDto: UpdateHomeDto,
     @User() user: UserTokenData,
   ): Promise<UpdateHomeDto> {
-    const home: UpdateHomeDto = await this.homeService.getHomeById(homeId);
-
-    if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Update, you must be the realtor associated with this home to update it.");
-
-    return this.homeService.updateHomeById(homeId, updateHomeDto);
+    return this.homeService.updateHomeById(homeId, updateHomeDto, user);
   }
 
   @Delete(":homeId")

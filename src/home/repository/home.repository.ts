@@ -24,22 +24,8 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
     return (await this.homeModel.findById(id).exec()).toObject();
   }
 
-  async updateById(id: string, updateHomeDto: UpdateHomeDto): Promise<HomeDocument> {
-    return null;
-    // return await this.prismaService.home.update({
-    //   where: {
-    //     id: updateHomeDto.id,
-    //   },
-    //   data: {
-    //     adress: updateHomeDto.adress,
-    //     city: updateHomeDto.city,
-    //     landSize: updateHomeDto.landSize,
-    //     numberOfBathrooms: updateHomeDto.numberOfBathrooms,
-    //     numberOfBedrooms: updateHomeDto.numberOfBedrooms,
-    //     price: updateHomeDto.price,
-    //     propertyType: updateHomeDto.propertyType,
-    //   },
-    // });
+  async updateById(homeId: string, updateHomeDto: UpdateHomeDto): Promise<IHome> {
+    return this.homeModel.findByIdAndUpdate(homeId, updateHomeDto, { new: true }).lean(); // { new: true } Option will let us get the updated Home
   }
 
   async deleteById(id: string): Promise<HomeDocument> {

@@ -99,7 +99,7 @@ export class UpdateHomeDto extends PartialType(CreateHomeDto) {
 
   @Expose({ name: "images" })
   getImages?() {
-    return this.images.map(image => {
+    return this.images?.map(image => {
       return new Image(image);
     });
   }

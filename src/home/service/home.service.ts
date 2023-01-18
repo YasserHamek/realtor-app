@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserTokenData } from "../../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
 import { IHomeRepository, IImageRepository, IMessageRepository } from "../repository/repository.interface";
@@ -31,8 +31,13 @@ export class HomeService {
     return new UpdateHomeDto(home);
   }
 
-  async updateHomeById(id: string, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
-    const updatedHomeDto = await this.homeRepository.updateById(id, updateHomeDto);
+  async updateHomeById(homeId: string, updateHomeDto: UpdateHomeDto, user: UserTokenData): Promise<UpdateHomeDto> {
+    const home: UpdateHomeDto = await this.getHomeById(homeId);
+
+    if (home.realtorId != user.id)
+      throw new UnauthorizedException("Anauthorized Update, you must be the realtor associated with this home to update it.");
+
+    const updatedHomeDto = await this.homeRepository.updateById(homeId, updateHomeDto);
 
     return new UpdateHomeDto(updatedHomeDto);
   }
