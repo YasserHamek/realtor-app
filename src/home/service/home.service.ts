@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { UserTokenData } from "../../user/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
 import { IHomeRepository, IImageRepository, IMessageRepository } from "../repository/repository.interface";
@@ -28,24 +28,28 @@ export class HomeService {
 
   async getHomeById(id: string): Promise<UpdateHomeDto> {
     const home = await this.homeRepository.getById(id);
+
+    if (!home) {
+      throw new NotFoundException("Home with id : " + id + " do not exist in database");
+    }
+
     return new UpdateHomeDto(home);
   }
 
   async updateHomeById(homeId: string, updateHomeDto: UpdateHomeDto, user: UserTokenData): Promise<UpdateHomeDto> {
-    const home: UpdateHomeDto = await this.getHomeById(homeId);
-
-    if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Update, you must be the realtor associated with this home to update it.");
+    this.checkUserAuthorisation(homeId, user, "Update");
 
     const updatedHomeDto = await this.homeRepository.updateById(homeId, updateHomeDto);
 
     return new UpdateHomeDto(updatedHomeDto);
   }
 
-  async deleteHomeById(id: string): Promise<UpdateHomeDto> {
-    const home = await this.homeRepository.deleteById(id);
+  async deleteHomeById(homeId: string, user: UserTokenData): Promise<UpdateHomeDto> {
+    this.checkUserAuthorisation(homeId, user, "Delete");
 
-    return new UpdateHomeDto(home);
+    const deletedHome = await this.homeRepository.deleteById(homeId);
+
+    return new UpdateHomeDto(deletedHome);
   }
 
   async addMessage(homeId: string, buyer: UserTokenData, message: string): Promise<MessageDto> {
@@ -65,5 +69,14 @@ export class HomeService {
     const messages = await this.messageRepository.getAllMessagesByHomeId(homeId);
 
     return messages.map(message => new MessageDto(message));
+  }
+
+  async checkUserAuthorisation(homeId: string, user: UserTokenData, mode: string): Promise<void> {
+    const home: UpdateHomeDto = await this.getHomeById(homeId);
+
+    if (home.realtorId != user.id)
+      throw new UnauthorizedException(
+        "Anauthorized " + mode + ", you must be the realtor associated with this home to " + mode + " it.",
+      );
   }
 }

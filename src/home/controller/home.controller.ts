@@ -71,12 +71,7 @@ export class HomeController {
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async deleteHomeById(@Param("homeId") homeId: string, @User() user: UserTokenData): Promise<UpdateHomeDto> {
-    const home: UpdateHomeDto = await this.homeService.getHomeById(homeId);
-
-    if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Delete, you must be the realtor associated with this home to delete it.");
-
-    return this.homeService.deleteHomeById(homeId);
+    return this.homeService.deleteHomeById(homeId, user);
   }
 
   @Post(":homeId/inquire")

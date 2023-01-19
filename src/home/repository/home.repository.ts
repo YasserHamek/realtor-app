@@ -21,20 +21,15 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
   }
 
   async getById(id: string): Promise<IHome> {
-    return (await this.homeModel.findById(id).exec()).toObject();
+    return (await this.homeModel.findById(id).exec())?.toObject();
   }
 
   async updateById(homeId: string, updateHomeDto: UpdateHomeDto): Promise<IHome> {
     return this.homeModel.findByIdAndUpdate(homeId, updateHomeDto, { new: true }).lean(); // { new: true } Option will let us get the updated Home
   }
 
-  async deleteById(id: string): Promise<HomeDocument> {
-    return null;
-    // return await this.prismaService.home.delete({
-    //   where: {
-    //     id: id,
-    //   },
-    // });
+  async deleteById(homeId: string): Promise<HomeDocument> {
+    return await this.homeModel.findByIdAndDelete(homeId).lean();
   }
 
   private getQuery(homeFilterDto: HomeFilterDto) {
