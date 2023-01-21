@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { UserTokenData } from "../../user/user.dto";
+import { UserTokenData } from "../../user/auth/service/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
-import { IHomeRepository, IImageRepository, IMessageRepository } from "../repository/repository.interface";
+import { IHomeRepository } from "../repository/home.repository";
+import { IImageRepository } from "../repository/image.repository";
+import { IMessageRepository } from "../repository/message.repository";
 
 @Injectable()
 export class HomeService {

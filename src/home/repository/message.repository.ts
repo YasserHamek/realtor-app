@@ -2,7 +2,11 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { PrismaService } from "../../prisma/prisma.service";
 import { MessageDto } from "../controller/home.dto";
-import { IMessageRepository } from "./repository.interface";
+import { GenericRepository } from "../../common/generic/repository/generic.repository.interface";
+
+export interface IMessageRepository<R> extends GenericRepository<MessageDto, R> {
+  getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]>;
+}
 
 export class MessageRepositoryMongoDb implements IMessageRepository<MessageDto> {
   constructor(@InjectModel("Message") private messageModel: Model<MessageDto>) {}

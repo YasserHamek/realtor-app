@@ -1,6 +1,6 @@
 import { BadRequestException, UnauthorizedException } from "@nestjs/common";
 import * as jwt from "jsonwebtoken";
-import { UserTokenData } from "../user.dto";
+import { UserTokenData } from "../../user/auth/service/user.dto";
 
 export class JwtUtils {
   public static createJsonWebToken(userId: number, userName: string): string {

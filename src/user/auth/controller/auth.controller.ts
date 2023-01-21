@@ -1,12 +1,12 @@
 import { Body, Controller, ParseEnumPipe, Post } from "@nestjs/common";
 import { Get, Param, UseGuards } from "@nestjs/common/decorators";
 import { UserType } from "@prisma/client";
-import { Roles } from "../../common/decorators/roles.decorator";
-import { User } from "../../common/decorators/user.decorator";
-import { AuthGuard } from "../../common/guards/auth.guard";
-import { RolesGuards } from "../../common/guards/roles.guard";
-import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../user.dto";
-import { AuthService } from "./auth.service";
+import { Roles } from "../../../common/decorators/roles.decorator";
+import { User } from "../../../common/decorators/user.decorator";
+import { AuthGuard } from "../../../common/guards/auth.guard";
+import { RolesGuards } from "../../../common/guards/roles.guard";
+import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData } from "../service/user.dto";
+import { AuthService } from "../service/auth.service";
 
 @Controller("auth")
 export class AuthController {

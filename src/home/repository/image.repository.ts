@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ImageDto } from "../controller/home.dto";
-import { IImageRepository } from "./repository.interface";
+
+export interface IImageRepository {
+  createImages(images: ImageDto[]): void;
+}
 
 @Injectable()
 export class ImageRepository implements IImageRepository {

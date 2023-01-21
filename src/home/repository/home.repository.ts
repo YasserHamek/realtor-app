@@ -4,7 +4,11 @@ import { Home, PropertyType as PropertyTypePrisma } from "@prisma/client";
 import { Model } from "mongoose";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "../controller/home.dto";
-import { IHomeRepository } from "./repository.interface";
+import { GenericRepository } from "../../common/generic/repository/generic.repository.interface";
+
+export interface IHomeRepository<R> extends GenericRepository<CreateHomeDto, R> {
+  getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<any>;
+}
 
 @Injectable()
 export class HomeRepositoryMongoDb implements IHomeRepository<UpdateHomeDto> {

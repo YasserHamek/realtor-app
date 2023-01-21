@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { Exclude } from "class-transformer";
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional } from "class-validator";
-import { MessageDto, UpdateHomeDto } from "../home/controller/home.dto";
+import { MessageDto, UpdateHomeDto } from "../../../home/controller/home.dto";
 
 export enum UserType {
   BUYER = "BUYER",
