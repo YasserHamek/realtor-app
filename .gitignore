@@ -37,3 +37,6 @@ lerna-debug.log*
 # env file
 .env
 test.env
+
+# other file
+TODO.txt

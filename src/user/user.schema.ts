@@ -1,6 +1,6 @@
 import { HydratedDocument, Schema } from "mongoose";
 
-export type HomeDocument = HydratedDocument<typeof UserSchema>;
+// export type HomeDocument = HydratedDocument<typeof UserSchema>;
 
 export const UserSchema = new Schema(
   {

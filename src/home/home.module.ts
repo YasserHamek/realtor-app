@@ -7,7 +7,7 @@ import { HomeSchema, MessageSchema } from "./schema/home.schema";
 import { HomeService } from "./service/home.service";
 import { HomeRepositoryMongoDb } from "./repository/home.repository";
 import { ImageRepository } from "./repository/image.repository";
-import { MessageRepository } from "./repository/message.repository";
+import { MessageRepositoryMongoDb } from "./repository/message.repository";
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { MessageRepository } from "./repository/message.repository";
     },
     {
       provide: "IMessageRepository",
-      useClass: MessageRepository,
+      useClass: MessageRepositoryMongoDb,
     },
     {
       provide: "IImageRepository",

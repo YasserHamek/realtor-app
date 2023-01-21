@@ -1,21 +1,20 @@
 import { Body, Controller, Post, Get, Query, Put, Param } from "@nestjs/common";
 import { Delete, UseGuards } from "@nestjs/common/decorators";
 import { UnauthorizedException } from "@nestjs/common/exceptions";
-import { PropertyType, UserType } from "@prisma/client";
 import { Roles } from "../../common/decorators/roles.decorator";
 import { User } from "../../common/decorators/user.decorator";
 import { AuthGuard } from "../../common/guards/auth.guard";
 import { RolesGuards } from "../../common/guards/roles.guard";
-import { UserTokenData } from "../../user/user.dto";
-import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "./home.dto";
+import { UserTokenData, UserType } from "../../user/user.dto";
+import { CreateHomeDto, HomeFilterDto, MessageDto, PropertyType, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "../service/home.service";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { IHome } from "../schema/home.schema";
+import { PropertyType as PropertyTypePrisma } from "@prisma/client";
 
 @Controller("home")
 export class HomeController {
-  constructor(private readonly homeService: HomeService, @InjectModel("Home") private homeModel: Model<IHome>) {}
+  constructor(private readonly homeService: HomeService, @InjectModel("Home") private homeModel: Model<UpdateHomeDto>) {}
 
   @Post()
   @Roles(UserType.ADMIN, UserType.REALTOR)
@@ -43,7 +42,7 @@ export class HomeController {
 
     const homeFilterDto: HomeFilterDto = {
       ...(city && { city }),
-      ...(propertyType && { propertyType }),
+      ...(propertyType && { propertyType: PropertyTypePrisma[propertyType] }),
       ...(price && { price }),
     };
 

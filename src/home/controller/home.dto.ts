@@ -1,8 +1,13 @@
-import { PropertyType } from "@prisma/client";
 import { Exclude, Expose, Type } from "class-transformer";
 import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
 import { UserDto } from "../../user/user.dto";
+import { PropertyType as PropertyTypePrisma } from "@prisma/client";
+
+export enum PropertyType {
+  RESIDENTIAL,
+  CONDO,
+}
 
 export class CreateHomeDto {
   @IsNumber()
@@ -45,9 +50,9 @@ export class CreateHomeDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => Image)
+  @Type(() => ImageDto)
   @IsOptional()
-  images?: Image[];
+  images?: ImageDto[];
 
   @IsNumber()
   @IsPositive()
@@ -59,7 +64,7 @@ export class CreateHomeDto {
   }
 }
 
-export class Image {
+export class ImageDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
@@ -80,12 +85,18 @@ export class Image {
     return this._id ? this._id.valueOf() : this.id;
   }
 
-  constructor(image: Partial<Image>) {
+  constructor(image: Partial<ImageDto>) {
     Object.assign(this, image);
   }
 }
 
 export class UpdateHomeDto extends PartialType(CreateHomeDto) {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MessageDto)
+  @IsOptional()
+  messages?: MessageDto[];
+
   @Exclude()
   createdAt?: Date;
 
@@ -100,7 +111,7 @@ export class UpdateHomeDto extends PartialType(CreateHomeDto) {
   @Expose({ name: "images" })
   getImages?() {
     return this.images?.map(image => {
-      return new Image(image);
+      return new ImageDto(image);
     });
   }
 
@@ -110,11 +121,11 @@ export class UpdateHomeDto extends PartialType(CreateHomeDto) {
   }
 }
 
-export class ResponseImageDto extends PartialType(Image) {}
+export class ResponseImageDto extends PartialType(ImageDto) {}
 
 export class HomeFilterDto {
   city?: string;
-  propertyType?: PropertyType;
+  propertyType?: PropertyTypePrisma;
   price?: {
     gte?: number;
     lte?: number;
@@ -126,7 +137,21 @@ export class MessageDto {
     Object.assign(this, messageDto);
   }
 
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  @Exclude()
   id?: number;
+
+  @IsNotEmpty()
+  @IsOptional()
+  @Exclude()
+  _id?: object;
+
+  @Expose({ name: "id" })
+  getHomeId?() {
+    return this._id ? this._id.valueOf() : this.id;
+  }
 
   @IsString()
   @IsNotEmpty()
@@ -148,10 +173,10 @@ export class MessageDto {
 
   @IsNumber()
   @IsPositive()
-  homeId: number;
+  homeId?: number;
 
   @IsOptional()
-  home?: CreateHomeDto;
+  home?: UpdateHomeDto;
 
   @Exclude()
   createdAt?: Date;

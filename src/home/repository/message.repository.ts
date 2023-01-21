@@ -1,8 +1,32 @@
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 import { PrismaService } from "../../prisma/prisma.service";
 import { MessageDto } from "../controller/home.dto";
 import { IMessageRepository } from "./repository.interface";
 
-export class MessageRepository implements IMessageRepository<MessageDto> {
+export class MessageRepositoryMongoDb implements IMessageRepository<MessageDto> {
+  constructor(@InjectModel("Message") private messageModel: Model<MessageDto>) {}
+
+  async create(messageDto: MessageDto): Promise<MessageDto> {
+    const message = new this.messageModel(messageDto);
+    return (await (await message.save()).populate("home")).toObject();
+  }
+
+  getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]> {
+    throw new Error("Method not implemented.");
+  }
+  getById(id: string): Promise<MessageDto> {
+    throw new Error("Method not implemented.");
+  }
+  updateById(id: string, updateHomeDto: Partial<MessageDto>): Promise<Partial<MessageDto>> {
+    throw new Error("Method not implemented.");
+  }
+  deleteById(id: string): Promise<Partial<MessageDto>> {
+    throw new Error("Method not implemented.");
+  }
+}
+
+export class MessageRepositoryPrisma implements IMessageRepository<MessageDto> {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(messageDto: Partial<MessageDto>): Promise<MessageDto> {

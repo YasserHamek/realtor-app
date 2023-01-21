@@ -1,4 +1,4 @@
-import { CreateHomeDto, HomeFilterDto, Image, MessageDto } from "../controller/home.dto";
+import { CreateHomeDto, HomeFilterDto, ImageDto, MessageDto } from "../controller/home.dto";
 
 export interface GenericRepository<T, R> {
   create(itemDto: T): Promise<R>;
@@ -15,7 +15,7 @@ export interface IHomeRepository<R> extends GenericRepository<CreateHomeDto, R> 
 }
 
 export interface IImageRepository {
-  createImages(images: Image[]): void;
+  createImages(images: ImageDto[]): void;
 }
 
 export interface IMessageRepository<R> extends GenericRepository<MessageDto, R> {

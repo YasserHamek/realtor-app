@@ -1,34 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Home } from "@prisma/client";
+import { Home, PropertyType as PropertyTypePrisma } from "@prisma/client";
 import { Model } from "mongoose";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateHomeDto, HomeFilterDto, UpdateHomeDto } from "../controller/home.dto";
-import { HomeDocument, IHome } from "../schema/home.schema";
 import { IHomeRepository } from "./repository.interface";
 
 @Injectable()
-export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
-  constructor(@InjectModel("Home") private homeModel: Model<IHome>) {}
+export class HomeRepositoryMongoDb implements IHomeRepository<UpdateHomeDto> {
+  constructor(@InjectModel("Home") private homeModel: Model<UpdateHomeDto>) {}
 
-  async create(createHomeDto: CreateHomeDto): Promise<IHome> {
+  async create(createHomeDto: CreateHomeDto): Promise<UpdateHomeDto> {
     const home = new this.homeModel(createHomeDto);
     return (await home.save()).toObject();
   }
 
-  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<IHome[]> {
+  async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
     return await this.homeModel.find(this.getQuery(homeFilterDto)).lean();
   }
 
-  async getById(id: string): Promise<IHome> {
-    return (await this.homeModel.findById(id).exec())?.toObject();
+  async getById(id: string): Promise<UpdateHomeDto> {
+    return (await (await this.homeModel.findById(id))?.populate("messages"))?.toObject();
   }
 
-  async updateById(homeId: string, updateHomeDto: UpdateHomeDto): Promise<IHome> {
+  async updateById(homeId: string, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
     return this.homeModel.findByIdAndUpdate(homeId, updateHomeDto, { new: true }).lean(); // { new: true } Option will let us get the updated Home
   }
 
-  async deleteById(homeId: string): Promise<HomeDocument> {
+  async deleteById(homeId: string): Promise<UpdateHomeDto> {
     return await this.homeModel.findByIdAndDelete(homeId).lean();
   }
 
@@ -45,7 +44,7 @@ export class HomeRepositoryMongoDb implements IHomeRepository<IHome> {
 }
 
 @Injectable()
-export class HomeRepositoryPrisma implements IHomeRepository<CreateHomeDto> {
+export class HomeRepositoryPrisma implements IHomeRepository<Home> {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createHomeDto: CreateHomeDto): Promise<Home> {
@@ -57,7 +56,7 @@ export class HomeRepositoryPrisma implements IHomeRepository<CreateHomeDto> {
         numberOfBathrooms: createHomeDto.numberOfBathrooms,
         numberOfBedrooms: createHomeDto.numberOfBedrooms,
         price: createHomeDto.price,
-        propertyType: createHomeDto.propertyType,
+        propertyType: PropertyTypePrisma[createHomeDto.propertyType],
         realtorId: createHomeDto.realtorId,
       },
     });
@@ -71,7 +70,7 @@ export class HomeRepositoryPrisma implements IHomeRepository<CreateHomeDto> {
     });
   }
 
-  async updateById(id: string, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
+  async updateById(id: string, updateHomeDto: UpdateHomeDto): Promise<Home> {
     return await this.prismaService.home.update({
       where: {
         id: updateHomeDto.id,
@@ -83,12 +82,12 @@ export class HomeRepositoryPrisma implements IHomeRepository<CreateHomeDto> {
         numberOfBathrooms: updateHomeDto.numberOfBathrooms,
         numberOfBedrooms: updateHomeDto.numberOfBedrooms,
         price: updateHomeDto.price,
-        propertyType: updateHomeDto.propertyType,
+        propertyType: PropertyTypePrisma[updateHomeDto.propertyType],
       },
     });
   }
 
-  async deleteById(id: string): Promise<UpdateHomeDto> {
+  async deleteById(id: string): Promise<Home> {
     return await this.prismaService.home.delete({
       where: {
         id: parseInt(id),

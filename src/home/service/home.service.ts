@@ -58,9 +58,13 @@ export class HomeService {
     const addedMessage = await this.messageRepository.create({
       message: message,
       buyerId: buyer.id,
-      homeId: home.id,
+      home: home,
       realtorId: home.realtorId,
     });
+
+    home.messages.push(addedMessage);
+
+    this.updateHomeById(home._id.valueOf() + "", home, buyer);
 
     return new MessageDto(addedMessage);
   }
@@ -71,7 +75,7 @@ export class HomeService {
     return messages.map(message => new MessageDto(message));
   }
 
-  async checkUserAuthorisation(homeId: string, user: UserTokenData, mode: string): Promise<void> {
+  private async checkUserAuthorisation(homeId: string, user: UserTokenData, mode: string): Promise<void> {
     const home: UpdateHomeDto = await this.getHomeById(homeId);
 
     if (home.realtorId != user.id)

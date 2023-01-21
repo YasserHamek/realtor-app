@@ -1,6 +1,13 @@
-import { Home, Message, User, UserType } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Exclude } from "class-transformer";
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional } from "class-validator";
+import { MessageDto, UpdateHomeDto } from "../home/controller/home.dto";
+
+export enum UserType {
+  BUYER = "BUYER",
+  REALTOR = "REALTOR",
+  ADMIN = "ADMIN",
+}
 
 export class SignUpUserDto {
   @IsString()
@@ -44,7 +51,7 @@ export class ProductKeyDto {
 }
 
 export class UserDto {
-  constructor(user: User) {
+  constructor(user: any) {
     Object.assign(this, user);
   }
 
@@ -67,11 +74,11 @@ export class UserDto {
 
   userType: UserType;
 
-  homes?: Home[];
+  homes?: UpdateHomeDto[];
 
-  buyerMessages?: Message[];
+  buyerMessages?: MessageDto[];
 
-  realtorMessages?: Message[];
+  realtorMessages?: MessageDto[];
 }
 
 export class UserTokenData {
