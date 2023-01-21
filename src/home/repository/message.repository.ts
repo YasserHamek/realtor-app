@@ -12,9 +12,10 @@ export class MessageRepositoryMongoDb implements IMessageRepository<MessageDto> 
     return (await (await message.save()).populate("home")).toObject();
   }
 
-  getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]> {
-    throw new Error("Method not implemented.");
+  async getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]> {
+    return await this.messageModel.find({ home: { _id: homeId } }).lean();
   }
+
   getById(id: string): Promise<MessageDto> {
     throw new Error("Method not implemented.");
   }
