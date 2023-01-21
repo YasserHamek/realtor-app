@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
+import { InjectModel } from "@nestjs/mongoose";
 import { User } from "@prisma/client";
-import { GenericRepository } from "../../../common/generic/repository/generic.repository.interface";
-import { PrismaService } from "../../../prisma/prisma.service";
-import { UserDto } from "../service/user.dto";
+import { Model } from "mongoose";
+import { GenericRepository } from "../../common/generic/repository/generic.repository.interface";
+import { PrismaService } from "../../prisma/prisma.service";
+import { UserDto } from "../controller/user.dto";
 
 export interface IUserRepository<R> extends GenericRepository<UserDto, R> {
   findByEmail(email: string): Promise<R>;
@@ -10,16 +12,19 @@ export interface IUserRepository<R> extends GenericRepository<UserDto, R> {
 
 @Injectable()
 export class userRepositoryMongoDb implements IUserRepository<UserDto> {
+  constructor(@InjectModel("User") private readonly userModel: Model<UserDto>) {}
+
   async findByEmail(email: string): Promise<UserDto> {
-    throw new Error("Method not implemented.");
+    return await this.userModel.findOne({ email: email })?.lean();
   }
 
   async create(userDto: UserDto): Promise<UserDto> {
-    throw new Error("Method not implemented.");
+    const user = new this.userModel(userDto);
+    return (await user.save())?.toObject();
   }
 
   async getById(id: string): Promise<UserDto> {
-    throw new Error("Method not implemented.");
+    return await this.userModel.findById(id).lean();
   }
 
   async updateById(id: string, userDto: Partial<UserDto>): Promise<Partial<UserDto>> {

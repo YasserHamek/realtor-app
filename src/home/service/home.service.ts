@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { UserTokenData } from "../../user/auth/service/user.dto";
+import { UserTokenData } from "../../user/controller/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
 import { IHomeRepository } from "../repository/home.repository";
 import { IImageRepository } from "../repository/image.repository";

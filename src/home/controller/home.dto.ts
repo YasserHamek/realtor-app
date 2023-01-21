@@ -1,7 +1,7 @@
 import { Exclude, Expose, Type } from "class-transformer";
 import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
-import { UserDto } from "../../user/auth/service/user.dto";
+import { UserDto } from "../../user/controller/user.dto";
 import { PropertyType as PropertyTypePrisma } from "@prisma/client";
 
 export enum PropertyType {

@@ -5,7 +5,7 @@ import { Roles } from "../../common/decorators/roles.decorator";
 import { User } from "../../common/decorators/user.decorator";
 import { AuthGuard } from "../../common/guards/auth.guard";
 import { RolesGuards } from "../../common/guards/roles.guard";
-import { UserTokenData, UserType } from "../../user/auth/service/user.dto";
+import { UserTokenData, UserType } from "../../user/controller/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, PropertyType, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "../service/home.service";
 import { InjectModel } from "@nestjs/mongoose";

@@ -1,7 +1,7 @@
 import { ConflictException, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
-import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserType } from "./user.dto";
+import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserType } from "../controller/user.dto";
 import * as bcrypt from "bcryptjs";
-import { JwtUtils } from "../../../common/helper/JwtUtils";
+import { JwtUtils } from "../../common/helper/JwtUtils";
 import { IUserRepository } from "../repository/user.repository";
 
 @Injectable()
