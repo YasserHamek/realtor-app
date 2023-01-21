@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { Exclude } from "class-transformer";
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional } from "class-validator";
 import { MessageDto, UpdateHomeDto } from "../../../home/controller/home.dto";
@@ -55,17 +54,17 @@ export class UserDto {
     Object.assign(this, user);
   }
 
-  id: number;
+  id?: string;
 
   name: string;
 
   phoneNumber: string;
 
   @Exclude()
-  createdAt: Date;
+  createdAt?: Date;
 
   @Exclude()
-  updatedAt: Date;
+  updatedAt?: Date;
 
   email: string;
 
@@ -86,7 +85,7 @@ export class UserTokenData {
     Object.assign(this, userTokenData);
   }
 
-  id: number;
+  id: string;
   name: string;
   iat: string;
 }

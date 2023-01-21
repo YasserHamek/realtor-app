@@ -35,12 +35,12 @@ export class MessageRepositoryPrisma implements IMessageRepository<MessageDto> {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(messageDto: Partial<MessageDto>): Promise<MessageDto> {
-    return await this.prismaService.message.create({
+    const createdMessage: any = await this.prismaService.message.create({
       data: {
         message: messageDto.message,
-        buyerId: messageDto.buyer.id,
+        buyerId: parseInt(messageDto.buyer.id),
         homeId: messageDto.home.id,
-        realtorId: messageDto.home.realtorId,
+        realtorId: parseInt(messageDto.home.realtorId),
       },
       include: {
         buyer: {
@@ -52,10 +52,12 @@ export class MessageRepositoryPrisma implements IMessageRepository<MessageDto> {
         },
       },
     });
+
+    return new MessageDto(createdMessage);
   }
 
   async getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]> {
-    return await this.prismaService.message.findMany({
+    const messages: any[] = await this.prismaService.message.findMany({
       where: {
         id: parseInt(homeId),
       },
@@ -69,6 +71,8 @@ export class MessageRepositoryPrisma implements IMessageRepository<MessageDto> {
         },
       },
     });
+
+    return messages.map(message => new MessageDto(message));
   }
 
   getById(id: string): Promise<MessageDto> {

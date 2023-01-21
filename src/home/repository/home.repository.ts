@@ -61,7 +61,7 @@ export class HomeRepositoryPrisma implements IHomeRepository<Home> {
         numberOfBedrooms: createHomeDto.numberOfBedrooms,
         price: createHomeDto.price,
         propertyType: PropertyTypePrisma[createHomeDto.propertyType],
-        realtorId: createHomeDto.realtorId,
+        realtorId: parseInt(createHomeDto.realtorId),
       },
     });
   }

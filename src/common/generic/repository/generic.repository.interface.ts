@@ -3,7 +3,7 @@ export interface GenericRepository<T, R> {
 
   getById(id: string): Promise<R>;
 
-  updateById(id: string, updateHomeDto: Partial<T>): Promise<Partial<R>>;
+  updateById(id: string, itemDto: Partial<T>): Promise<Partial<R>>;
 
   deleteById(id: string): Promise<Partial<R>>;
 }

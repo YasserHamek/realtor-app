@@ -54,10 +54,9 @@ export class CreateHomeDto {
   @IsOptional()
   images?: ImageDto[];
 
-  @IsNumber()
-  @IsPositive()
+  @IsString()
   @IsOptional()
-  realtorId?: number;
+  realtorId?: string;
 
   constructor(createHomeDto: Partial<CreateHomeDto>) {
     Object.assign(this, createHomeDto);
@@ -133,7 +132,7 @@ export class HomeFilterDto {
 }
 
 export class MessageDto {
-  constructor(messageDto: MessageDto) {
+  constructor(messageDto: Partial<MessageDto>) {
     Object.assign(this, messageDto);
   }
 
@@ -159,21 +158,21 @@ export class MessageDto {
 
   @IsNumber()
   @IsPositive()
-  buyerId: number;
+  buyerId: string;
 
   @IsOptional()
   buyer?: Partial<UserDto>;
 
   @IsNumber()
   @IsPositive()
-  realtorId: number;
+  realtorId: string;
 
   @IsOptional()
   realtor?: UserDto;
 
   @IsNumber()
   @IsPositive()
-  homeId?: number;
+  homeId?: string;
 
   @IsOptional()
   home?: UpdateHomeDto;
