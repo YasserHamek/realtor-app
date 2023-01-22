@@ -1,6 +1,4 @@
-import { HydratedDocument, Schema } from "mongoose";
-
-// export type HomeDocument = HydratedDocument<typeof UserSchema>;
+import { Schema } from "mongoose";
 
 export const UserSchema = new Schema(
   {
@@ -34,19 +32,7 @@ export const UserSchema = new Schema(
   { timestamps: true },
 );
 
-// export class User {
-//   name: string;
-
-//   phoneNumber: string;
-
-//   email: string;
-
-//   password: string;
-
-//   // userType              UserType
-//   // homes                 Home[]
-//   // buyerMessages         Message[] @relation("BuyerMessage")
-//   // realtorMessages       Message[] @relation("RealtorMessage")
-//   // createdAt             DateTime  @default(now())
-//   // updatedAt             DateTime  @updatedAt
-// }
+// enable virtual to get id instead of _id
+UserSchema.set("toObject", {
+  virtuals: true,
+});

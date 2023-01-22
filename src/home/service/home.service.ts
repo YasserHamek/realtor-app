@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, Type, UnauthorizedException } from "@nestjs/common";
+import { Types } from "mongoose";
 import { UserTokenData } from "../../user/controller/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, UpdateHomeDto } from "../controller/home.dto";
 import { IHomeRepository } from "../repository/home.repository";
@@ -59,9 +60,9 @@ export class HomeService {
 
     const addedMessage = await this.messageRepository.create({
       message: message,
-      buyerId: buyer.id,
+      sender: { _id: new Types.ObjectId(buyer.id) },
       home: home,
-      realtorId: home.realtorId,
+      receiver: { _id: new Types.ObjectId(home.realtor.id) },
     });
 
     home.messages.push(addedMessage);
@@ -71,7 +72,9 @@ export class HomeService {
     return new MessageDto(addedMessage);
   }
 
-  async getAllMessages(homeId: string): Promise<MessageDto[]> {
+  async getAllMessages(homeId: string, user: UserTokenData): Promise<MessageDto[]> {
+    this.checkUserAuthorisation(homeId, user, "check messages");
+
     const messages = await this.messageRepository.getAllMessagesByHomeId(homeId);
 
     return messages.map(message => new MessageDto(message));
@@ -80,7 +83,7 @@ export class HomeService {
   private async checkUserAuthorisation(homeId: string, user: UserTokenData, mode: string): Promise<void> {
     const home: UpdateHomeDto = await this.getHomeById(homeId);
 
-    if (home.realtorId != user.id)
+    if (home.realtor.id != user.id)
       throw new UnauthorizedException(
         "Anauthorized " + mode + ", you must be the realtor associated with this home to " + mode + " it.",
       );

@@ -1,5 +1,17 @@
-import { Exclude } from "class-transformer";
-import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional } from "class-validator";
+import { Exclude, Type } from "class-transformer";
+import {
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  Matches,
+  MinLength,
+  IsOptional,
+  IsNumber,
+  IsPositive,
+  IsEnum,
+  IsArray,
+  ValidateNested,
+} from "class-validator";
 import { MessageDto, UpdateHomeDto } from "../../home/controller/home.dto";
 
 export enum UserType {
@@ -54,10 +66,22 @@ export class UserDto {
     Object.assign(this, user);
   }
 
+  @Exclude()
+  _id?: object;
+
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  @Exclude()
   id?: string;
 
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
+  @Matches(/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im, {
+    message: "phoneNumber must be a valide phone number",
+  })
   phoneNumber: string;
 
   @Exclude()
@@ -66,17 +90,31 @@ export class UserDto {
   @Exclude()
   updatedAt?: Date;
 
+  @IsEmail()
   email: string;
 
   @Exclude()
   password: string;
 
+  @IsEnum(UserType)
   userType: UserType;
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateHomeDto)
+  @IsOptional()
   homes?: UpdateHomeDto[];
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MessageDto)
+  @IsOptional()
   buyerMessages?: MessageDto[];
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MessageDto)
+  @IsOptional()
   realtorMessages?: MessageDto[];
 }
 

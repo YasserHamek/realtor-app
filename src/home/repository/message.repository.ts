@@ -17,7 +17,13 @@ export class MessageRepositoryMongoDb implements IMessageRepository<MessageDto> 
   }
 
   async getAllMessagesByHomeId(homeId: string): Promise<MessageDto[]> {
-    return await this.messageModel.find({ home: { _id: homeId } }).lean();
+    return (
+      await this.messageModel
+        .find({ home: { _id: homeId } })
+        .populate("home")
+        .populate("sender")
+        .populate("receiver")
+    ).map(home => home?.toObject());
   }
 
   getById(id: string): Promise<MessageDto> {
@@ -38,9 +44,9 @@ export class MessageRepositoryPrisma implements IMessageRepository<MessageDto> {
     const createdMessage: any = await this.prismaService.message.create({
       data: {
         message: messageDto.message,
-        buyerId: parseInt(messageDto.buyer.id),
+        buyerId: parseInt(messageDto.sender.id),
         homeId: messageDto.home.id,
-        realtorId: parseInt(messageDto.home.realtorId),
+        realtorId: parseInt(messageDto.home.realtor.id),
       },
       include: {
         buyer: {

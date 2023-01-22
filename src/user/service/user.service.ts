@@ -44,7 +44,7 @@ export class AuthService {
   async signInUser(signInUserDto: SignInUserDto): Promise<string> {
     const user: UserDto = await this.userRepository.findByEmail(signInUserDto.email);
 
-    if (!user || !bcrypt.compare(signInUserDto.password, user ? user.password : ""))
+    if (!user || !(await bcrypt.compare(signInUserDto.password, user.password)))
       throw new HttpException("Email or Password are incorrect", HttpStatus.BAD_REQUEST);
 
     return JwtUtils.createJsonWebToken(user.id, user.name);

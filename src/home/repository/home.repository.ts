@@ -16,23 +16,25 @@ export class HomeRepositoryMongoDb implements IHomeRepository<UpdateHomeDto> {
 
   async create(createHomeDto: CreateHomeDto): Promise<UpdateHomeDto> {
     const home = new this.homeModel(createHomeDto);
-    return (await home.save()).toObject();
+    return (await home.save())?.toObject();
   }
 
   async getAllHomesByFilter(homeFilterDto: HomeFilterDto): Promise<UpdateHomeDto[]> {
-    return await this.homeModel.find(this.getQuery(homeFilterDto)).lean();
+    return (await this.homeModel.find(this.getQuery(homeFilterDto)).populate("messages").populate("realtor")).map(home =>
+      home?.toObject(),
+    );
   }
 
   async getById(id: string): Promise<UpdateHomeDto> {
-    return (await (await this.homeModel.findById(id))?.populate("messages"))?.toObject();
+    return (await this.homeModel.findById(id).populate("messages").populate("realtor"))?.toObject();
   }
 
   async updateById(homeId: string, updateHomeDto: UpdateHomeDto): Promise<UpdateHomeDto> {
-    return this.homeModel.findByIdAndUpdate(homeId, updateHomeDto, { new: true }).lean(); // { new: true } Option will let us get the updated Home
+    return (await this.homeModel.findByIdAndUpdate(homeId, updateHomeDto, { new: true }))?.toObject(); // { new: true } Option will let us get the updated Home
   }
 
   async deleteById(homeId: string): Promise<UpdateHomeDto> {
-    return await this.homeModel.findByIdAndDelete(homeId).lean();
+    return (await this.homeModel.findByIdAndDelete(homeId)).toObject();
   }
 
   private getQuery(homeFilterDto: HomeFilterDto) {
@@ -61,7 +63,7 @@ export class HomeRepositoryPrisma implements IHomeRepository<Home> {
         numberOfBedrooms: createHomeDto.numberOfBedrooms,
         price: createHomeDto.price,
         propertyType: PropertyTypePrisma[createHomeDto.propertyType],
-        realtorId: parseInt(createHomeDto.realtorId),
+        realtorId: parseInt(createHomeDto.realtor.id),
       },
     });
   }

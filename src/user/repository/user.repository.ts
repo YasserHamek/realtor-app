@@ -15,7 +15,7 @@ export class userRepositoryMongoDb implements IUserRepository<UserDto> {
   constructor(@InjectModel("User") private readonly userModel: Model<UserDto>) {}
 
   async findByEmail(email: string): Promise<UserDto> {
-    return await this.userModel.findOne({ email: email })?.lean();
+    return (await this.userModel.findOne({ email: email }))?.toObject();
   }
 
   async create(userDto: UserDto): Promise<UserDto> {
@@ -24,7 +24,7 @@ export class userRepositoryMongoDb implements IUserRepository<UserDto> {
   }
 
   async getById(id: string): Promise<UserDto> {
-    return await this.userModel.findById(id).lean();
+    return (await this.userModel.findById(id)).toObject();
   }
 
   async updateById(id: string, userDto: Partial<UserDto>): Promise<Partial<UserDto>> {

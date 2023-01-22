@@ -13,11 +13,8 @@ export class CreateHomeDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  @Exclude()
   id?: number;
 
-  @IsNotEmpty()
-  @IsOptional()
   @Exclude()
   _id?: object;
 
@@ -54,9 +51,8 @@ export class CreateHomeDto {
   @IsOptional()
   images?: ImageDto[];
 
-  @IsString()
   @IsOptional()
-  realtorId?: string;
+  realtor?: Partial<UserDto>;
 
   constructor(createHomeDto: Partial<CreateHomeDto>) {
     Object.assign(this, createHomeDto);
@@ -67,7 +63,6 @@ export class ImageDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  @Exclude()
   id?: number;
 
   @IsNotEmpty()
@@ -78,11 +73,6 @@ export class ImageDto {
   @IsString()
   @IsNotEmpty()
   url: string;
-
-  @Expose({ name: "id" })
-  getImageId?() {
-    return this._id ? this._id.valueOf() : this.id;
-  }
 
   constructor(image: Partial<ImageDto>) {
     Object.assign(this, image);
@@ -101,11 +91,6 @@ export class UpdateHomeDto extends PartialType(CreateHomeDto) {
 
   @Exclude()
   updatedAt?: Date;
-
-  @Expose({ name: "id" })
-  getHomeId?() {
-    return this._id ? this._id.valueOf() : this.id;
-  }
 
   @Expose({ name: "images" })
   getImages?() {
@@ -139,18 +124,10 @@ export class MessageDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  @Exclude()
   id?: number;
 
-  @IsNotEmpty()
-  @IsOptional()
   @Exclude()
   _id?: object;
-
-  @Expose({ name: "id" })
-  getHomeId?() {
-    return this._id ? this._id.valueOf() : this.id;
-  }
 
   @IsString()
   @IsNotEmpty()
@@ -158,17 +135,17 @@ export class MessageDto {
 
   @IsNumber()
   @IsPositive()
-  buyerId: string;
+  senderId?: string;
 
   @IsOptional()
-  buyer?: Partial<UserDto>;
+  sender?: Partial<UserDto>;
 
   @IsNumber()
   @IsPositive()
-  realtorId: string;
+  receiverId?: string;
 
   @IsOptional()
-  realtor?: UserDto;
+  receiver?: Partial<UserDto>;
 
   @IsNumber()
   @IsPositive()

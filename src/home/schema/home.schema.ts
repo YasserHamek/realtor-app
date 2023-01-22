@@ -1,5 +1,13 @@
 import { Schema } from "mongoose";
 
+export const ImageSchema = new Schema({
+  url: String,
+});
+
+ImageSchema.set("toObject", {
+  virtuals: true,
+});
+
 export const HomeSchema = new Schema(
   {
     adress: String,
@@ -14,19 +22,13 @@ export const HomeSchema = new Schema(
 
     landSize: Number,
 
-    realtorId: Number,
-
     propertyType: {
       type: String,
       enum: ["RESIDENTIAL", "CONDO"],
     },
 
     // images will be nested subdocument
-    images: [
-      new Schema({
-        url: String,
-      }),
-    ],
+    images: [ImageSchema],
 
     realtor: {
       type: Schema.Types.ObjectId,
@@ -44,6 +46,10 @@ export const HomeSchema = new Schema(
     timestamps: true, // this will add createdAt and updatedAt automatically
   },
 );
+
+HomeSchema.set("toObject", {
+  virtuals: true,
+});
 
 export const MessageSchema = new Schema(
   {
@@ -68,3 +74,7 @@ export const MessageSchema = new Schema(
     timestamps: true,
   },
 );
+
+MessageSchema.set("toObject", {
+  virtuals: true,
+});

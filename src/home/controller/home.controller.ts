@@ -9,7 +9,7 @@ import { UserTokenData, UserType } from "../../user/controller/user.dto";
 import { CreateHomeDto, HomeFilterDto, MessageDto, PropertyType, UpdateHomeDto } from "./home.dto";
 import { HomeService } from "../service/home.service";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { PropertyType as PropertyTypePrisma } from "@prisma/client";
 
 @Controller("home")
@@ -20,7 +20,7 @@ export class HomeController {
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
-    createHomeDto.realtorId = user.id;
+    createHomeDto.realtor = { _id: new Types.ObjectId(user.id) };
     return await this.homeService.createHome(createHomeDto);
   }
 
@@ -74,21 +74,16 @@ export class HomeController {
   }
 
   @Post(":homeId/inquire")
-  @Roles(UserType.BUYER)
+  @Roles(UserType.BUYER, UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async inquire(@Param("homeId") homeId: string, @User() user: UserTokenData, @Body() { message }): Promise<MessageDto> {
     return await this.homeService.addMessage(homeId, user, message);
   }
 
   @Get(":homeId/messages")
-  @Roles(UserType.REALTOR)
+  @Roles(UserType.REALTOR, UserType.ADMIN)
   @UseGuards(AuthGuard, RolesGuards)
   async getAllHomeMessages(@Param("homeId") homeId: string, @User() user: UserTokenData): Promise<MessageDto[]> {
-    const home: UpdateHomeDto = await this.homeService.getHomeById(homeId);
-
-    if (home.realtorId != user.id)
-      throw new UnauthorizedException("Anauthorized Delete, you must be the realtor associated with this home to delete it.");
-
-    return this.homeService.getAllMessages(homeId);
+    return this.homeService.getAllMessages(homeId, user);
   }
 }

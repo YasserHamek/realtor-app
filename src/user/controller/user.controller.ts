@@ -7,7 +7,7 @@ import { RolesGuards } from "../../common/guards/roles.guard";
 import { ProductKeyDto, SignInUserDto, SignUpUserDto, UserDto, UserTokenData, UserType } from "./user.dto";
 import { AuthService } from "../service/user.service";
 
-@Controller("auth")
+@Controller("user")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
