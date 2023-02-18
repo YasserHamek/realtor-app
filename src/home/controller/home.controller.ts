@@ -11,20 +11,28 @@ import { HomeService } from "../service/home.service";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { PropertyType as PropertyTypePrisma } from "@prisma/client";
+import { ApiCreatedResponse, ApiFoundResponse, ApiOkResponse, ApiParam, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("home")
 @Controller("home")
 export class HomeController {
   constructor(private readonly homeService: HomeService, @InjectModel("Home") private homeModel: Model<UpdateHomeDto>) {}
 
   @Post()
+  @ApiCreatedResponse({ type: UpdateHomeDto, description: "The home has been created successfully." })
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
-  async createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData) {
+  async createHome(@Body() createHomeDto: CreateHomeDto, @User() user: UserTokenData): Promise<UpdateHomeDto> {
     createHomeDto.realtor = { _id: new Types.ObjectId(user.id) };
     return await this.homeService.createHome(createHomeDto);
   }
 
   @Get()
+  @ApiFoundResponse({ type: UpdateHomeDto, isArray: true, description: "Homes mathiching the filter has been found." })
+  @ApiParam({ name: "city", description: "Home city search filter." })
+  @ApiParam({ name: "propertyType", description: "Home type searching filter, either Cando or Residential." })
+  @ApiParam({ name: "minPrice", description: "Home minimal price searching filter." })
+  @ApiParam({ name: "maxPrice", description: "Home maximal price searching filter." })
   @UseGuards(AuthGuard)
   async getAllHomes(
     @Query("city") city: string,
@@ -50,12 +58,16 @@ export class HomeController {
   }
 
   @Get(":homeId")
+  @ApiFoundResponse({ type: UpdateHomeDto, description: "The home has been found successfully." })
+  @ApiParam({ name: "homeId", description: "Home id." })
   @UseGuards(AuthGuard)
   async getHomeById(@Param("homeId") homeId: string): Promise<UpdateHomeDto> {
     return this.homeService.getHomeById(homeId);
   }
 
   @Put(":homeId")
+  @ApiOkResponse({ type: UpdateHomeDto, description: "Home has been updated successfully." })
+  @ApiParam({ name: "homeId", description: "Home id." })
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async updateHomeById(
@@ -67,6 +79,8 @@ export class HomeController {
   }
 
   @Delete(":homeId")
+  @ApiOkResponse({ type: UpdateHomeDto, description: "Home has been deleted successfully." })
+  @ApiParam({ name: "homeId", description: "Home id." })
   @Roles(UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async deleteHomeById(@Param("homeId") homeId: string, @User() user: UserTokenData): Promise<UpdateHomeDto> {
@@ -74,6 +88,8 @@ export class HomeController {
   }
 
   @Post(":homeId/inquire")
+  @ApiFoundResponse({ type: UpdateHomeDto, description: "Home has been found." })
+  @ApiParam({ name: "homeId", description: "Home id." })
   @Roles(UserType.BUYER, UserType.ADMIN, UserType.REALTOR)
   @UseGuards(AuthGuard, RolesGuards)
   async inquire(@Param("homeId") homeId: string, @User() user: UserTokenData, @Body() { message }): Promise<MessageDto> {
@@ -81,6 +97,8 @@ export class HomeController {
   }
 
   @Get(":homeId/messages")
+  @ApiFoundResponse({ type: MessageDto, isArray: true, description: "Messages has been found." })
+  @ApiParam({ name: "homeId", description: "Home id." })
   @Roles(UserType.REALTOR, UserType.ADMIN)
   @UseGuards(AuthGuard, RolesGuards)
   async getAllHomeMessages(@Param("homeId") homeId: string, @User() user: UserTokenData): Promise<MessageDto[]> {

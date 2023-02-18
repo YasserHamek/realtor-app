@@ -14,7 +14,7 @@ export class HomeService {
     @Inject("IMessageRepository") private readonly messageRepository: IMessageRepository<any>,
   ) {}
 
-  async createHome(createHomeDto: CreateHomeDto) {
+  async createHome(createHomeDto: CreateHomeDto): Promise<UpdateHomeDto> {
     const createdHome: CreateHomeDto = await this.homeRepository.create(createHomeDto);
     return new UpdateHomeDto(createdHome);
   }
